@@ -1,0 +1,39 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TaskTracker_DAL.Context;
+using TaskTracker_DAL.Interfaces;
+using TaskTracker_DAL.Models;
+
+namespace TaskTracker_DAL.Repositories
+{
+    public class UserRepository : IUserRepository
+    {
+        private readonly TaskTrackerContext context;
+
+        public UserRepository(TaskTrackerContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task<User> SignInUser(User userData)
+        {
+            await context.Users.AddAsync(userData);
+            await context.SaveChangesAsync();
+
+            return userData;
+        }
+
+        public async Task<User> LogInUser(User userData)
+        {
+            User? userLoggedIn = await context.Users
+                    .Where(e => e.EmailId == userData.EmailId && e.Password == userData.Password)
+                    .FirstOrDefaultAsync();
+
+            return userLoggedIn!;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers()
+        {
+            return await context.Users.ToListAsync();
+        }
+    }
+}
