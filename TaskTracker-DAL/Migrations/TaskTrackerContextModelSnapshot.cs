@@ -87,9 +87,6 @@ namespace TaskTracker_DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<string>("AccessToken")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -104,9 +101,6 @@ namespace TaskTracker_DAL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserMessage")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");

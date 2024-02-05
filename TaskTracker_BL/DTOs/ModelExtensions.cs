@@ -21,8 +21,6 @@ namespace TaskTracker_BL.Models
                 user.UserId,
                 user.FullName,
                 user.EmailId,
-                user.UserMessage!,
-                user.AccessToken!,
                 user.CreatedDate
                 );
         }
@@ -55,7 +53,7 @@ namespace TaskTracker_BL.Models
                 project.Name,
                 project.Status,
                 project.Priority,
-                project.Tasks?.Select(x => x.ToTaskUnitDto())
+                project.Tasks!
                 );
         }
 

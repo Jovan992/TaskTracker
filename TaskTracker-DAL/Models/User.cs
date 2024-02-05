@@ -17,8 +17,6 @@ namespace TaskTracker_DAL.Models
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
-        public string? UserMessage { get; set; }
-        public string? AccessToken { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

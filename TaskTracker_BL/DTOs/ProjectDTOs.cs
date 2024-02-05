@@ -1,28 +1,58 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskTracker_BL.Models;
 using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.DTOs;
 
 // DTO for getting Projects from DB
-public record ProjectDto(
-    int ProjectId,
-    string Name,
-    Status Status,
-    int Priority,
-    IEnumerable<TaskUnitDto>? Tasks
- );
+public class ProjectDto
+{
+    public ProjectDto(int projectId, string name, Status status, int priority, IEnumerable<TaskUnit> tasks)
+    {
+        this.ProjectId = projectId;
+        this.Name = name;
+        this.Status = status;
+        this.Priority = priority;
+        if (tasks is not null)
+        {
+            this.Tasks = tasks.Select(x => x.ToTaskUnitDto());
+        }
+
+    }
+    public int ProjectId { get; set; }
+    public string Name { get; set; }
+    public Status Status { get; set; }
+    public int Priority { get; set; }
+    public IEnumerable<TaskUnitDto>? Tasks { get; set; }
+}
 
 // DTO for creating new Project
-public record CreateProjectDto(
-    [Required][StringLength(50)] string Name,
-    [Range(1, 3)] Status Status,
-    [Range(1, 5)] int Priority
- );
+public class CreateProjectDto
+{
+    [Required]
+    [StringLength(50)]
+    public string Name { get; set; }
+
+    [Range(1, 3)]
+    public Status Status { get; set; }
+
+    [Range(1, 5)]
+    public int Priority { get; set; }
+}
 
 // DTO for updating Project
-public record UpdateProjectDto(
-    [Required] int ProjectId,
-    [Required][StringLength(50)] string Name,
-    [Range(1, 3)] Status Status,
-    [Range(1, 5)] int Priority
- );
+public class UpdateProjectDto
+{
+    [Required]
+    public int ProjectId { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    public string Name { get; set; }
+
+    [Range(1, 3)]
+    public Status Status { get; set; }
+
+    [Range(1, 5)]
+    public int Priority { get; set; }
+}
