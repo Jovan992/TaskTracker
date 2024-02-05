@@ -29,15 +29,13 @@ namespace TaskTracker_BL.Services
 
         public async Task<LoggedInUserDto> LogInUser(LogInUserDto userData)
         {
-            User userLoggedIn = await userRepository.LogInUser(userData.ToUser());
+            LoggedInUserDto userLoggedIn = (await userRepository.LogInUser(userData.ToUser())).ToLoggedInUserDto();
             if (userLoggedIn is null)
             {
                 return null!;
             }
             else
             {
-                userLoggedIn.UserMessage = "Login Success";
-
                 var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, configuration["Jwt:Subject"]!),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -57,9 +55,16 @@ namespace TaskTracker_BL.Services
                     expires: DateTime.UtcNow.AddMinutes(10),
                     signingCredentials: signIn);
 
-                userLoggedIn.AccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                LoggedInUserDto userLoggedInWithToken = new LoggedInUserDto(
+                    userLoggedIn.UserId,
+                    userLoggedIn.FullName,
+                    userLoggedIn.EmailId,
+                    userLoggedIn.CreatedDate,
+                    "Login Success",
+                    new JwtSecurityTokenHandler().WriteToken(token)
+                    );
 
-                return userLoggedIn.ToLoggedInUserDto();
+                return userLoggedInWithToken;
             }
         }
 
