@@ -36,9 +36,6 @@ public class CreateTaskUnitDto
 // DTO for updating task
 public class UpdateTaskUnitDto
 {
-    [Required] 
-    public int TaskId { get; set; }
-
     [Required]
     [StringLength(50)]
     public string Name { get; set; }

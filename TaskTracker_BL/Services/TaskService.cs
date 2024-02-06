@@ -2,6 +2,7 @@
 using TaskTracker_BL.Interfaces;
 using TaskTracker_BL.Models;
 using TaskTracker_DAL.Interfaces;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Services
 {
@@ -21,7 +22,16 @@ namespace TaskTracker_BL.Services
 
         public async Task<TaskUnitDto> GetTaskById(int taskId)
         {
-            return (await taskRepository.GetTaskById(taskId)).ToTaskUnitDto();
+            TaskUnit taskFound = await taskRepository.GetTaskById(taskId);
+
+            if (taskFound is null)
+            {
+                return null;
+            }
+            else
+            {
+                return taskFound.ToTaskUnitDto();
+            }
         }
 
         public async Task<TaskUnitDto> CreateTask(CreateTaskUnitDto createTaskDto)
@@ -29,9 +39,9 @@ namespace TaskTracker_BL.Services
             return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit())).ToTaskUnitDto();
         }
 
-        public async Task UpdateTask(UpdateTaskUnitDto updateTaskDto)
+        public async Task UpdateTask(int id, UpdateTaskUnitDto updateTaskDto)
         {
-            await taskRepository.UpdateTask(updateTaskDto.ToTaskUnit());
+            await taskRepository.UpdateTask(id, updateTaskDto.ToTaskUnit());
         }
 
         public async Task<bool> DeleteTask(int taskId)

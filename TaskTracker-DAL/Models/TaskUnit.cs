@@ -9,10 +9,10 @@ namespace TaskTracker_DAL.Models
         public int TaskId { get; set; }
         
         [Required]
-        [StringLength(50, ErrorMessage = "Name length can't be more than 50.")]
+        [StringLength(50, ErrorMessage = "Name needs to have less than 50 characters.")]
         public string Name { get; set; }
 
-        [StringLength(300, ErrorMessage = "Description length can't be more than 300.")]
+        [StringLength(300, ErrorMessage = "Description needs to have less than 300 characters.")]
         public string? Description { get; set; }
 
         [Required]

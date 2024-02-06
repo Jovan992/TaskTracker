@@ -17,7 +17,6 @@ public class ProjectDto
         {
             this.Tasks = tasks.Select(x => x.ToTaskUnitDto());
         }
-
     }
     public int ProjectId { get; set; }
     public string Name { get; set; }
@@ -33,7 +32,7 @@ public class CreateProjectDto
     [StringLength(50)]
     public string Name { get; set; }
 
-    [Range(1, 3)]
+    [Range(0, 2)]
     public Status Status { get; set; }
 
     [Range(1, 5)]
@@ -43,9 +42,6 @@ public class CreateProjectDto
 // DTO for updating Project
 public class UpdateProjectDto
 {
-    [Required]
-    public int ProjectId { get; set; }
-
     [Required]
     [StringLength(50)]
     public string Name { get; set; }

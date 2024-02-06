@@ -2,6 +2,7 @@
 using TaskTracker_BL.Interfaces;
 using TaskTracker_BL.Models;
 using TaskTracker_DAL.Interfaces;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Services
 {
@@ -11,13 +12,12 @@ namespace TaskTracker_BL.Services
 
         public ProjectService(IProjectRepository projectRepository)
         {
-        this.projectRepository = projectRepository;
+            this.projectRepository = projectRepository;
         }
 
         public async Task<ProjectDto> CreateProject(CreateProjectDto createProjectDto)
         {
-           return (await projectRepository.CreateProject(createProjectDto.ToProject())).ToProjectDto();
-
+            return (await projectRepository.CreateProject(createProjectDto.ToProject())).ToProjectDto();
         }
 
         public async Task<bool> DeleteProject(int projectId)
@@ -32,7 +32,16 @@ namespace TaskTracker_BL.Services
 
         public async Task<ProjectDto> GetProjectById(int projectId)
         {
-            return (await projectRepository.GetProjectById(projectId)).ToProjectDto();
+            Project projectFound = await projectRepository.GetProjectById(projectId);
+
+            if (projectFound is null)
+            {
+                return null;
+            }
+            else
+            {
+                return projectFound.ToProjectDto();
+            }
         }
 
         public bool ProjectExists(int projectId)
@@ -40,9 +49,9 @@ namespace TaskTracker_BL.Services
             return projectRepository.ProjectExists(projectId);
         }
 
-        public async Task UpdateProject(UpdateProjectDto updateProjectDto)
+        public async Task UpdateProject(int id, UpdateProjectDto updateProjectDto)
         {
-            await projectRepository.UpdateProject(updateProjectDto.ToProject());
+            await projectRepository.UpdateProject(id, updateProjectDto.ToProject());
         }
     }
 }

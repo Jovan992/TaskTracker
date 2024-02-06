@@ -32,9 +32,15 @@ namespace TaskTracker_DAL.Repositories
             return task;
         }
 
-        public async Task UpdateTask(TaskUnit task)
+        public async Task UpdateTask(int id, TaskUnit task)
         {
-            context.Entry(task).State = EntityState.Modified;
+            TaskUnit? Entity = await context.Tasks.SingleOrDefaultAsync(x => x.TaskId == id);
+
+            Entity.Name = task.Name;
+            Entity.Description = task.Description;
+            Entity.ProjectId = task.ProjectId;
+
+            context.Tasks.Update(Entity);
 
             await context.SaveChangesAsync();
         }

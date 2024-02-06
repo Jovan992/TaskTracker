@@ -43,7 +43,6 @@ namespace TaskTracker_BL.Models
                 EmailId = logInUserDto.EmailId,
                 Password = logInUserDto.Password
             };
-               
         }
 
         public static ProjectDto ToProjectDto(this Project project)
@@ -123,7 +122,6 @@ namespace TaskTracker_BL.Models
         {
             return new Project()
             {
-                ProjectId = updateProjectDto.ProjectId,
                 Name = updateProjectDto.Name,
                 Status = updateProjectDto.Status,
                 Priority = updateProjectDto.Priority

@@ -45,25 +45,18 @@ namespace TaskTracker.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, UpdateTaskUnitDto updateTaskDto)
         {
-            if (id != updateTaskDto.TaskId)
+            if (!taskService.TaskExists(id))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             try
             {
-                await taskService.UpdateTask(updateTaskDto);
+                await taskService.UpdateTask(id, updateTaskDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!taskService.TaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
