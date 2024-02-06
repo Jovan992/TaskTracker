@@ -44,25 +44,18 @@ namespace TaskTracker.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto updateProjectDto)
         {
-            if (id != updateProjectDto.ProjectId)
+            if (!projectService.ProjectExists(id))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             try
             {
-                await projectService.UpdateProject(updateProjectDto);
+                await projectService.UpdateProject(id, updateProjectDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!projectService.ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -90,7 +83,7 @@ namespace TaskTracker.Controllers
             }
             else
             {
-            return NoContent();
+                return NoContent();
             }
         }
     }

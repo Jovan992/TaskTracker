@@ -7,7 +7,7 @@ namespace TaskTracker_BL.Interfaces
         Task<IEnumerable<TaskUnitDto>> GetAllTasks();
         Task<TaskUnitDto> GetTaskById(int taskId);
         Task<TaskUnitDto> CreateTask(CreateTaskUnitDto createTaskDto);
-        Task UpdateTask(UpdateTaskUnitDto taskDto);
+        Task UpdateTask(int id, UpdateTaskUnitDto taskDto);
         Task<bool> DeleteTask(int taskId);
         bool TaskExists(int taskId);
     }

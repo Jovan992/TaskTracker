@@ -7,7 +7,7 @@ namespace TaskTracker_BL.Interfaces
         Task<IEnumerable<ProjectDto>> GetAllProjects();
         Task<ProjectDto> GetProjectById(int projectId);
         Task<ProjectDto> CreateProject(CreateProjectDto projectDto);
-        Task UpdateProject(UpdateProjectDto updateProjectDto);
+        Task UpdateProject(int id, UpdateProjectDto updateProjectDto);
         bool ProjectExists(int projectId);
         Task<bool> DeleteProject(int projectId);
     }

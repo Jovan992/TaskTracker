@@ -18,7 +18,7 @@ public class ProjectRepository : IProjectRepository
     {
         Project? newProject = (await context.Projects.AddAsync(project)).Entity;
         await context.SaveChangesAsync();
-      
+
         return newProject;
     }
 
@@ -52,9 +52,17 @@ public class ProjectRepository : IProjectRepository
         return context.Projects.Any(x => x.ProjectId == projectId);
     }
 
-    public async Task UpdateProject(Project project)
+    public async Task UpdateProject(int id, Project project)
     {
-        context.Entry(project).State = EntityState.Modified;
+        Project? Entity = await context.Projects
+        .Include(x => x.Tasks)
+        .SingleOrDefaultAsync(x => x.ProjectId == id);
+
+        Entity!.Name = project.Name;
+        Entity.Status = project.Status;
+        Entity.Priority = project.Priority;
+
+        context.Projects.Update(Entity);
 
         await context.SaveChangesAsync();
     }
