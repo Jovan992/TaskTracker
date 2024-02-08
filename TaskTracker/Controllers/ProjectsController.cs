@@ -9,14 +9,9 @@ namespace TaskTracker.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController(IProjectService projectService) : ControllerBase
     {
-        private readonly IProjectService projectService;
-
-        public ProjectsController(IProjectService projectService)
-        {
-            this.projectService = projectService;
-        }
+        private readonly IProjectService projectService = projectService;
 
         // GET: api/Projects
         [HttpGet]
@@ -29,6 +24,12 @@ namespace TaskTracker.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetProjectById(int id)
         {
+            if (id < 1)
+            {
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
+            }
+
             var project = await projectService.GetProjectById(id);
 
             if (project == null)
@@ -44,6 +45,12 @@ namespace TaskTracker.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto updateProjectDto)
         {
+            if (id < 1)
+            {
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
+            }
+
             if (!projectService.ProjectExists(id))
             {
                 return NotFound();
@@ -55,7 +62,8 @@ namespace TaskTracker.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw;
+                object message = "A concurrency conflict happened! please retry.";
+                return Conflict(message);
             }
 
             return NoContent();
@@ -75,6 +83,12 @@ namespace TaskTracker.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
+            if (id < 1)
+            {
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
+            }
+
             var project = await projectService.DeleteProject(id);
 
             if (!project)

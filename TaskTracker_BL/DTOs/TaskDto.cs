@@ -23,11 +23,11 @@ public class CreateTaskUnitDto
 {
     [Required]
     [StringLength(50)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Required]
     [StringLength(300)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [Required]
     public int ProjectId { get; set; }
 }
@@ -38,11 +38,11 @@ public class UpdateTaskUnitDto
 {
     [Required]
     [StringLength(50)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Required]
     [StringLength(300)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [Required]
     public int ProjectId { get; set; }

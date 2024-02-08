@@ -26,7 +26,7 @@ namespace TaskTracker.Controllers
         }
 
         [HttpPost]
-        [Route("LogIn")]
+        [Route("LogIn/")]
         public async Task<IActionResult> LogIn(LogInUserDto userData)
         {
             if (userData != null)

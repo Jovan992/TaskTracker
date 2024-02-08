@@ -5,14 +5,9 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(TaskTrackerContext context) : IUserRepository
     {
-        private readonly TaskTrackerContext context;
-
-        public UserRepository(TaskTrackerContext context)
-        {
-            this.context = context;
-        }
+        private readonly TaskTrackerContext context = context;
 
         public async Task<User> SignInUser(User userData)
         {
