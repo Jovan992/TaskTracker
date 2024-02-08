@@ -14,6 +14,8 @@ namespace TaskTracker
 
             builder.Services.AddControllers();
 
+            builder.Services.AddControllers().AddNewtonsoftJson();
+
             var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
             builder.Services.RegisterDataAccessLayer(connectionString!);
             builder.Services.RegisterBusinessLogicLayer();

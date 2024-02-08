@@ -7,22 +7,23 @@ namespace TaskTracker_DAL.Models
         [Key]
         public int ProjectId { get; set; }
 
-        [Required]
-        [StringLength(50, ErrorMessage = "Name length can't be more than 50.")]
+        [StringLength(50)]
         public string Name { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? CompletionDate { get; set; }
-        public Status Status { get; set; } = Status.NotStarted;
+        public DateOnly StartDate { get; set; }
+        public DateOnly CompletionDate { get; set; }
 
-        [Range(1, 5)]
+        [Range(1, 3)]
+        public ProjectStatusEnum? Status { get; set; }
+
+        [Range(1, 10)]
         public int Priority { get; set; } = 1;
         public IEnumerable<TaskUnit>? Tasks { get; set; }
     }
 
-    public enum Status
+    public enum ProjectStatusEnum
     {
-        NotStarted,
-        Active,
-        Completed
+        NotStarted = 1,
+        Active = 2,
+        Completed = 3
     }
 }

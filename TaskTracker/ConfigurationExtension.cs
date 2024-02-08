@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TaskTracker_BL;
 
 namespace TaskTracker
 {
@@ -39,6 +40,7 @@ namespace TaskTracker
                         new string[] { }
                     }
                 });
+                c.SchemaFilter<DateOnlySchemaFilter>();
             });
         }
 

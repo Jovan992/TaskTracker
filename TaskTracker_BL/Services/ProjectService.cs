@@ -10,9 +10,9 @@ namespace TaskTracker_BL.Services
     {
         private readonly IProjectRepository projectRepository = projectRepository;
 
-        public async Task<ProjectDto> CreateProject(CreateProjectDto createProjectDto)
+        public async Task<ExistingProjectDto> CreateProject(ProjectDto projectDto)
         {
-            return (await projectRepository.CreateProject(createProjectDto.ToProject())).ToProjectDto();
+            return (await projectRepository.CreateProject(projectDto.ToProject())).ToExistingProjectDto();
         }
 
         public async Task<bool> DeleteProject(int projectId)
@@ -20,12 +20,12 @@ namespace TaskTracker_BL.Services
             return await projectRepository.DeleteProject(projectId);
         }
 
-        public async Task<IEnumerable<ProjectDto>> GetAllProjects()
+        public async Task<IEnumerable<ExistingProjectDto>> GetAllProjects()
         {
-            return (await projectRepository.GetAllProjects()).Select(x => x.ToProjectDto());
+            return (await projectRepository.GetAllProjects()).Select(x => x.ToExistingProjectDto());
         }
 
-        public async Task<ProjectDto> GetProjectById(int projectId)
+        public async Task<ExistingProjectDto> GetProjectById(int projectId)
         {
             Project projectFound = await projectRepository.GetProjectById(projectId);
 
@@ -35,7 +35,7 @@ namespace TaskTracker_BL.Services
             }
             else
             {
-                return projectFound.ToProjectDto();
+                return projectFound.ToExistingProjectDto();
             }
         }
 
@@ -44,9 +44,9 @@ namespace TaskTracker_BL.Services
             return projectRepository.ProjectExists(projectId);
         }
 
-        public async Task UpdateProject(int id, UpdateProjectDto updateProjectDto)
+        public async Task UpdateProject(int id, ProjectDto projectDto)
         {
-            await projectRepository.UpdateProject(id, updateProjectDto.ToProject());
+            await projectRepository.UpdateProject(id, projectDto.ToProject());
         }
     }
 }
