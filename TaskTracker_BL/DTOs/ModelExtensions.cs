@@ -45,12 +45,14 @@ namespace TaskTracker_BL.Models
             };
         }
 
-        public static ProjectDto ToProjectDto(this Project project)
+        public static ExistingProjectDto ToExistingProjectDto(this Project project)
         {
-            return new ProjectDto(
+            return new ExistingProjectDto(
                 project.ProjectId,
                 project.Name,
-                project.Status,
+                project.StartDate,
+                project.CompletionDate,
+                (ProjectStatusEnum)project.Status!,
                 project.Priority,
                 project.Tasks!
                 );
@@ -68,11 +70,12 @@ namespace TaskTracker_BL.Models
 
         public static TaskUnit ToTaskUnit(this TaskUnitDto taskDto)
         {
-            return new TaskUnit() {
-            TaskId = taskDto.TaskId,
-            Name = taskDto.Name,
-            Description = taskDto.Description,
-            ProjectId = taskDto.ProjectId
+            return new TaskUnit()
+            {
+                TaskId = taskDto.TaskId,
+                Name = taskDto.Name,
+                Description = taskDto.Description,
+                ProjectId = taskDto.ProjectId
             };
         }
 
@@ -84,7 +87,7 @@ namespace TaskTracker_BL.Models
                 Description = createTaskUnitDto.Description,
                 ProjectId = createTaskUnitDto.ProjectId
             };
-        } 
+        }
 
         public static TaskUnit ToTaskUnit(this UpdateTaskUnitDto createTaskUnitDto)
         {
@@ -96,7 +99,7 @@ namespace TaskTracker_BL.Models
             };
         }
 
-        public static Project ToProject(this ProjectDto projectDto)
+        public static Project ToProject(this ExistingProjectDto projectDto)
         {
             return new Project()
             {
@@ -108,23 +111,15 @@ namespace TaskTracker_BL.Models
             };
         }
 
-        public static Project ToProject(this CreateProjectDto createProjectDto)
+        public static Project ToProject(this ProjectDto projectDto)
         {
             return new Project()
             {
-                Name = createProjectDto.Name,
-                Status = createProjectDto.Status,
-                Priority = createProjectDto.Priority
-            };
-        }
-
-        public static Project ToProject(this UpdateProjectDto updateProjectDto)
-        {
-            return new Project()
-            {
-                Name = updateProjectDto.Name,
-                Status = updateProjectDto.Status,
-                Priority = updateProjectDto.Priority
+                Name = projectDto.Name,
+                StartDate = DateOnly.FromDateTime(projectDto.StartDate),
+                CompletionDate = DateOnly.FromDateTime(projectDto.CompletionDate),
+                Status = projectDto.Status,
+                Priority = projectDto.Priority,
             };
         }
     }

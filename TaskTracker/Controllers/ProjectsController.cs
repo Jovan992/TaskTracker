@@ -15,14 +15,14 @@ namespace TaskTracker.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectDto>>> GetAllProjects()
+        public async Task<ActionResult<IEnumerable<ExistingProjectDto>>> GetAllProjects()
         {
             return Ok(await projectService.GetAllProjects());
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectDto>> GetProjectById(int id)
+        public async Task<ActionResult<ExistingProjectDto>> GetProjectById(int id)
         {
             if (id < 1)
             {
@@ -43,7 +43,7 @@ namespace TaskTracker.Controllers
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto updateProjectDto)
+        public async Task<IActionResult> UpdateProject(int id, ProjectDto projectDto)
         {
             if (id < 1)
             {
@@ -58,7 +58,7 @@ namespace TaskTracker.Controllers
 
             try
             {
-                await projectService.UpdateProject(id, updateProjectDto);
+                await projectService.UpdateProject(id, projectDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,11 +72,11 @@ namespace TaskTracker.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProjectDto>> CreateProject(CreateProjectDto createProjectDto)
+        public async Task<ActionResult<ExistingProjectDto>> CreateProject(ProjectDto projectDto)
         {
-            ProjectDto projectDto = await projectService.CreateProject(createProjectDto);
+            ExistingProjectDto dbProjectDto = await projectService.CreateProject(projectDto);
 
-            return CreatedAtAction(nameof(GetProjectById), new { id = projectDto.ProjectId }, projectDto);
+            return CreatedAtAction(nameof(GetProjectById), new { id = dbProjectDto.ProjectId }, projectDto);
         }
 
         // DELETE: api/Projects/5

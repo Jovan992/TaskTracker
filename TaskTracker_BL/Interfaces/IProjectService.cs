@@ -4,10 +4,10 @@ namespace TaskTracker_BL.Interfaces
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectDto>> GetAllProjects();
-        Task<ProjectDto> GetProjectById(int projectId);
-        Task<ProjectDto> CreateProject(CreateProjectDto projectDto);
-        Task UpdateProject(int id, UpdateProjectDto updateProjectDto);
+        Task<IEnumerable<ExistingProjectDto>> GetAllProjects();
+        Task<ExistingProjectDto> GetProjectById(int projectId);
+        Task<ExistingProjectDto> CreateProject(ProjectDto projectDto);
+        Task UpdateProject(int id, ProjectDto ProjectDto);
         bool ProjectExists(int projectId);
         Task<bool> DeleteProject(int projectId);
     }
