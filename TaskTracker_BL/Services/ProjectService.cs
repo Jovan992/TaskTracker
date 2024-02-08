@@ -6,14 +6,9 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectService(IProjectRepository projectRepository) : IProjectService
     {
-        private readonly IProjectRepository projectRepository;
-
-        public ProjectService(IProjectRepository projectRepository)
-        {
-            this.projectRepository = projectRepository;
-        }
+        private readonly IProjectRepository projectRepository = projectRepository;
 
         public async Task<ProjectDto> CreateProject(CreateProjectDto createProjectDto)
         {
@@ -36,7 +31,7 @@ namespace TaskTracker_BL.Services
 
             if (projectFound is null)
             {
-                return null;
+                return null!;
             }
             else
             {

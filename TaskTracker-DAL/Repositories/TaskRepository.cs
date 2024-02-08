@@ -5,14 +5,10 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Repositories
 {
-    public class TaskRepository : ITaskRepository
+    public class TaskRepository(TaskTrackerContext context) : ITaskRepository
     {
-        private readonly TaskTrackerContext context;
+        private readonly TaskTrackerContext context = context;
 
-        public TaskRepository(TaskTrackerContext context)
-        {
-            this.context = context;
-        }
         public async Task<IEnumerable<TaskUnit>> GetAllTasks()
         {
             return await context.Tasks.ToListAsync();
@@ -36,7 +32,7 @@ namespace TaskTracker_DAL.Repositories
         {
             TaskUnit? Entity = await context.Tasks.SingleOrDefaultAsync(x => x.TaskId == id);
 
-            Entity.Name = task.Name;
+            Entity!.Name = task.Name;
             Entity.Description = task.Description;
             Entity.ProjectId = task.ProjectId;
 

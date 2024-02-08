@@ -6,14 +6,9 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Services
 {
-    public class TaskService : ITaskService
+    public class TaskService(ITaskRepository taskRepository) : ITaskService
     {
-        private readonly ITaskRepository taskRepository;
-
-        public TaskService(ITaskRepository taskRepository)
-        {
-            this.taskRepository = taskRepository;
-        }
+        private readonly ITaskRepository taskRepository = taskRepository;
 
         public async Task<IEnumerable<TaskUnitDto>> GetAllTasks()
         {
@@ -26,7 +21,7 @@ namespace TaskTracker_BL.Services
 
             if (taskFound is null)
             {
-                return null;
+                return null!;
             }
             else
             {

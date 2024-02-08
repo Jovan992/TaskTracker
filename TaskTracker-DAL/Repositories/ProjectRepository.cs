@@ -5,14 +5,9 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Repositories;
 
-public class ProjectRepository : IProjectRepository
+public class ProjectRepository(TaskTrackerContext context) : IProjectRepository
 {
-    private readonly TaskTrackerContext context;
-
-    public ProjectRepository(TaskTrackerContext context)
-    {
-        this.context = context;
-    }
+    private readonly TaskTrackerContext context = context;
 
     public async Task<Project> CreateProject(Project project)
     {

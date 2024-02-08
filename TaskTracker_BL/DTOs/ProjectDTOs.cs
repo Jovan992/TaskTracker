@@ -42,7 +42,7 @@ public class CreateProjectDto
 // DTO for updating Project
 public class UpdateProjectDto
 {
-    [Required]
+    //[Required]
     [StringLength(50)]
     public string Name { get; set; }
 

@@ -10,14 +10,9 @@ namespace TaskTracker.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksController : ControllerBase
+    public class TasksController(ITaskService taskService) : ControllerBase
     {
-        private readonly ITaskService taskService;
-
-        public TasksController(ITaskService taskService)
-        {
-            this.taskService = taskService;
-        }
+        private readonly ITaskService taskService = taskService;
 
         // GET: api/Tasks
         [HttpGet]
@@ -30,6 +25,12 @@ namespace TaskTracker.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskUnitDto>> GetTaskById(int id)
         {
+            if (id < 1)
+            {
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
+            }
+
             var task = await taskService.GetTaskById(id);
 
             if (task == null)
@@ -45,9 +46,10 @@ namespace TaskTracker.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, UpdateTaskUnitDto updateTaskDto)
         {
-            if (!taskService.TaskExists(id))
+            if (id < 1)
             {
-                return NotFound();
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
             }
 
             try
@@ -76,6 +78,12 @@ namespace TaskTracker.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
+            if (id < 1)
+            {
+                ModelState.AddModelError("Id", "Id must be greater than 0.");
+                return BadRequest(ModelState);
+            }
+
             var task = await taskService.DeleteTask(id);
 
             if (!task)
