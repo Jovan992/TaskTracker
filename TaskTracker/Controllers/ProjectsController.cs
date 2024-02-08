@@ -76,7 +76,7 @@ namespace TaskTracker.Controllers
         {
             ExistingProjectDto dbProjectDto = await projectService.CreateProject(projectDto);
 
-            return CreatedAtAction(nameof(GetProjectById), new { id = dbProjectDto.ProjectId }, projectDto);
+            return CreatedAtAction(nameof(GetProjectById), new { id = dbProjectDto.ProjectId }, dbProjectDto);
         }
 
         // DELETE: api/Projects/5
