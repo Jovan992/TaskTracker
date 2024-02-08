@@ -9,8 +9,8 @@ namespace TaskTracker_DAL.Models
 
         [StringLength(50)]
         public string Name { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly CompletionDate { get; set; }
+        public DateOnly? StartDate { get; set; }
+        public DateOnly? CompletionDate { get; set; }
 
         [Range(1, 3)]
         public ProjectStatusEnum? Status { get; set; }

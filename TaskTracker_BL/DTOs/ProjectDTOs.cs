@@ -8,7 +8,7 @@ namespace TaskTracker_BL.DTOs;
 // DTO for getting Projects from DB
 public class ExistingProjectDto
 {
-    public ExistingProjectDto(int projectId, string name, DateOnly startDate, DateOnly completionDate, ProjectStatusEnum status, int priority, IEnumerable<TaskUnit> tasks)
+    public ExistingProjectDto(int projectId, string name, DateOnly? startDate, DateOnly? completionDate, ProjectStatusEnum status, int priority, IEnumerable<TaskUnit> tasks)
     {
         this.ProjectId = projectId;
         this.Name = name;
@@ -39,10 +39,8 @@ public class ProjectDto : IValidatableObject
     public string Name { get; set; }
 
     [DataType(DataType.Date)]
-    //public DateOnly? StartDate { get; set; }
     public DateTime StartDate { get; set; } = default;
 
-    //public DateOnly? CompletionDate { get; set; }
     [DataType(DataType.Date)]
     public DateTime CompletionDate { get; set; } = default;
 
