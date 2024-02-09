@@ -26,7 +26,7 @@ namespace TaskTracker_DAL.Repositories
             return userLoggedIn!;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
             return await context.Users.ToListAsync();
         }

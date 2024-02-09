@@ -50,7 +50,7 @@ namespace TaskTracker.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+        public async Task<ActionResult<List<UserDto>>> GetAllUsers()
         {
             return Ok(await userService.GetAllUsers());
         }

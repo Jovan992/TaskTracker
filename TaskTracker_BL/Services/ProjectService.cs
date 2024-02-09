@@ -20,9 +20,9 @@ namespace TaskTracker_BL.Services
             return await projectRepository.DeleteProject(projectId);
         }
 
-        public async Task<IEnumerable<ExistingProjectDto>> GetAllProjects()
+        public async Task<List<ExistingProjectDto>> GetAllProjects()
         {
-            return (await projectRepository.GetAllProjects()).Select(x => x.ToExistingProjectDto());
+            return (await projectRepository.GetAllProjects()).Select(x => x.ToExistingProjectDto()).ToList();
         }
 
         public async Task<ExistingProjectDto> GetProjectById(int projectId)

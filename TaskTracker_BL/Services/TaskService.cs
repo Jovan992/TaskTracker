@@ -10,9 +10,9 @@ namespace TaskTracker_BL.Services
     {
         private readonly ITaskRepository taskRepository = taskRepository;
 
-        public async Task<IEnumerable<DbTaskUnitDto>> GetAllTasks()
+        public async Task<List<DbTaskUnitDto>> GetAllTasks()
         {
-            return (await taskRepository.GetAllTasks()).Select(x => x.ToDbTaskUnitDto());
+            return (await taskRepository.GetAllTasks()).Select(x => x.ToDbTaskUnitDto()).ToList();
         }
 
         public async Task<DbTaskUnitDto> GetTaskById(int taskId)

@@ -32,7 +32,7 @@ public class ProjectRepository(TaskTrackerContext context) : IProjectRepository
         return true;
     }
 
-    public async Task<IEnumerable<Project>> GetAllProjects()
+    public async Task<List<Project>> GetAllProjects()
     {
         return await context.Projects.Include(x => x.Tasks).ToListAsync();
     }

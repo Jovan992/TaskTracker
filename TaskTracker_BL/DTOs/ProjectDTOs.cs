@@ -46,7 +46,7 @@ public class ProjectDto : IValidatableObject
 
     [Required]
     [Range(1, 3, ErrorMessage = "Invalid Project Status. Please provide number for corresponding project status: 1 (NotStarted), 2 (Active), 3 (Completed)")]
-    public ProjectStatusEnum? Status { get; set; }
+    public ProjectStatusEnum Status { get; set; }
 
     [Required]
     [Range(1, 10, ErrorMessage = "Ivalid Priority. Please provide value from 1 (Highest priority) to 10 (Lowest priority)")]
@@ -59,12 +59,37 @@ public class ProjectDto : IValidatableObject
         DateOnly todayShort = DateOnly.FromDateTime(DateTime.UtcNow);
         DateOnly maxDateShort = new DateOnly(2050, 1, 1);
 
+        if (CompletionDate != default && StartDate == default)
+        {
+            yield return new ValidationResult("Missing Start Date of a project.", [nameof(StartDate)]);
+        }
+        else if (Status == ProjectStatusEnum.Completed)
+        {
+            if (StartDate == default)
+            {
+                yield return new ValidationResult("Missing Start Date of a project", [nameof(StartDate)]);
+            }
+            if (CompletionDate == default)
+            {
+                yield return new ValidationResult("Missing Completion Date of a project.", [nameof(CompletionDate)]);
+            }
+        }
+        else if (Status == ProjectStatusEnum.Active && StartDate == default)
+        {
+            yield return new ValidationResult("Missing Start Date. If project Status is set to value 2 (Active), you need to provide Start Date.", [nameof(StartDate)]);
+        }
+
+        if (Status == ProjectStatusEnum.Active && startDateShort > todayShort)
+        {
+            yield return new ValidationResult("Project Status can't have value 2 (Active) if its start date is in the future. Please provide valid Status. Options: 1 (Not Started), 2(Active), 3(Completed)", [nameof(Status)]);
+        }
+
         if (startDateShort > maxDateShort)
         {
             yield return new ValidationResult("Please enter date that is before 2050/1/1", [nameof(StartDate)]);
         }
 
-        if (startDateShort > completionDateShort)
+        if (startDateShort > completionDateShort && CompletionDate != default)
         {
             yield return new ValidationResult("Start Date can't be after Completion Date.", [nameof(StartDate)]);
         }
@@ -72,18 +97,6 @@ public class ProjectDto : IValidatableObject
         if (completionDateShort > maxDateShort)
         {
             yield return new ValidationResult("Please enter date that is before 2050/1/1", [nameof(CompletionDate)]);
-        }
-
-        if (Status == ProjectStatusEnum.Active)
-        {
-            if (StartDate == default)
-            {
-                yield return new ValidationResult("Missing Start Date. If project Status is set to value 2 (Active), you need to provide Start Date.", [nameof(StartDate)]);
-            }
-            else if (startDateShort > todayShort)
-            {
-                yield return new ValidationResult("Project Status can't have value 2 (Active) if its start date is in the future. Please provide valid Status. Options: 1 (Not Started), 2(Active), 3(Completed)", [nameof(Status)]);
-            }
         }
 
         if (StartDate != default && startDateShort <= todayShort)
@@ -101,18 +114,10 @@ public class ProjectDto : IValidatableObject
                 {
                     yield return new ValidationResult("Invalid status. If project is still active, please set Status to value 2 (Active)", [nameof(Status)]);
                 }
-                else if (Status == ProjectStatusEnum.Completed)
-                {
-                    yield return new ValidationResult("Invalid Status. Project Status can't have value 3 (Completed) if its CompletionDate is in the future. Please provide valid Status. Options: 1 (Not Started), 2(Active), 3(Completed)", [nameof(Status)]);
-                }
             }
             else if (Status == ProjectStatusEnum.NotStarted)
             {
                 yield return new ValidationResult("Invalid Status. If project has its Start Date in the past, its Status can't be set to value 1 (Not Started). Please provide valid Status. Options: 1 (Not Started), 2(Active), 3(Completed)", [nameof(Status)]);
-            }
-            else if (Status == ProjectStatusEnum.Completed)
-            {
-                yield return new ValidationResult("Completion Date missing. Please provide Completion Date of a project.", [nameof(CompletionDate)]);
             }
         }
     }

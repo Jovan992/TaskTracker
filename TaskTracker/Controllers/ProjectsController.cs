@@ -15,9 +15,15 @@ namespace TaskTracker.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExistingProjectDto>>> GetAllProjects()
+        public async Task<ActionResult<List<ExistingProjectDto>>> GetAllProjects()
         {
-            return Ok(await projectService.GetAllProjects());
+            var projects = await projectService.GetAllProjects();
+
+            if(projects is null)
+            {
+                return NotFound();
+            }
+            return Ok(projects);
         }
 
         // GET: api/Projects/5

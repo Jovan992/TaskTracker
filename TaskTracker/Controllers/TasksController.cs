@@ -16,7 +16,7 @@ namespace TaskTracker.Controllers
 
         // GET: api/Tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DbTaskUnitDto>>> GetAllTasks()
+        public async Task<ActionResult<List<DbTaskUnitDto>>> GetAllTasks()
         {
             return Ok(await taskService.GetAllTasks());
         }
