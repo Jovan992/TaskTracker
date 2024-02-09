@@ -4,7 +4,7 @@ namespace TaskTracker_DAL.Interfaces
 {
     public interface ITaskRepository
     {
-        Task<IEnumerable<TaskUnit>> GetAllTasks();
+        Task<List<TaskUnit>> GetAllTasks();
         Task<TaskUnit> GetTaskById(int taskId);
         Task<TaskUnit> CreateTask(TaskUnit task);
         Task UpdateTask(int id, TaskUnit task);

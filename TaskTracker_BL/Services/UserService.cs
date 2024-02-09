@@ -22,9 +22,9 @@ namespace TaskTracker_BL.Services
             this.configuration = configuration;
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllUsers()
+        public async Task<List<UserDto>> GetAllUsers()
         {
-            return (await userRepository.GetAllUsers()).Select(x => x.ToUserDto());
+            return (await userRepository.GetAllUsers()).Select(x => x.ToUserDto()).ToList();
         }
 
         public async Task<LoggedInUserDto> LogInUser(LogInUserDto userData)

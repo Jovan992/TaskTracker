@@ -4,7 +4,7 @@ namespace TaskTracker_BL.Interfaces
 {
     public interface ITaskService
     {
-        Task<IEnumerable<DbTaskUnitDto>> GetAllTasks();
+        Task<List<DbTaskUnitDto>> GetAllTasks();
         Task<DbTaskUnitDto> GetTaskById(int taskId);
         Task<DbTaskUnitDto> CreateTask(TaskUnitDto createTaskDto);
         Task UpdateTask(int id, TaskUnitDto taskDto);

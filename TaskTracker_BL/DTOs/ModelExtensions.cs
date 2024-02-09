@@ -103,11 +103,32 @@ namespace TaskTracker_BL.Models
 
         public static Project ToProject(this ProjectDto projectDto)
         {
+            DateOnly? startDate;
+            DateOnly? completionDate;
+
+            if (projectDto.StartDate == default)
+            {
+                startDate = null;
+            }
+            else
+            {
+                startDate = DateOnly.FromDateTime(projectDto.StartDate);
+            }
+
+            if (projectDto.CompletionDate == default)
+            {
+                completionDate = null;
+            }
+            else
+            {
+                completionDate = DateOnly.FromDateTime(projectDto.CompletionDate);
+            }
+
             return new Project()
             {
                 Name = projectDto.Name,
-                StartDate = DateOnly.FromDateTime(projectDto.StartDate),
-                CompletionDate = DateOnly.FromDateTime(projectDto.CompletionDate),
+                StartDate = startDate,
+                CompletionDate = completionDate,
                 Status = projectDto.Status,
                 Priority = projectDto.Priority,
             };

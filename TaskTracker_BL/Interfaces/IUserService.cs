@@ -6,6 +6,6 @@ namespace TaskTracker_BL.Interfaces
     {
         Task<LoggedInUserDto> LogInUser(LogInUserDto userData);
         Task<UserDto> SignInUser(SignInUserDto userData);
-        Task<IEnumerable<UserDto>> GetAllUsers();
+        Task<List<UserDto>> GetAllUsers();
     }
 }

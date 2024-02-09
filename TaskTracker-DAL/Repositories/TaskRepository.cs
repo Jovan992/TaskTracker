@@ -9,7 +9,7 @@ namespace TaskTracker_DAL.Repositories
     {
         private readonly TaskTrackerContext context = context;
 
-        public async Task<IEnumerable<TaskUnit>> GetAllTasks()
+        public async Task<List<TaskUnit>> GetAllTasks()
         {
             return await context.Tasks.ToListAsync();
         }
