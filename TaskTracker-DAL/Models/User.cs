@@ -12,7 +12,7 @@ namespace TaskTracker_DAL.Models
         public string FullName { get; set; }
 
         [Required]
-        [EmailAddress]
+        [MaxLength(50)]
         public string EmailId { get; set; }
         [Required]
         [MinLength(6)]

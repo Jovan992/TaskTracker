@@ -19,7 +19,7 @@ public class ExistingProjectDto
 
         if (tasks is not null)
         {
-            this.Tasks = tasks.Select(x => x.ToTaskUnitDto());
+            this.Tasks = tasks.Select(x => x.ToDbTaskUnitDto());
         }
     }
     public int ProjectId { get; set; }
@@ -28,14 +28,14 @@ public class ExistingProjectDto
     public DateOnly? CompletionDate { get; set; }
     public ProjectStatusEnum? Status { get; set; }
     public int Priority { get; set; }
-    public IEnumerable<TaskUnitDto>? Tasks { get; set; }
+    public IEnumerable<DbTaskUnitDto>? Tasks { get; set; }
 }
 
 // DTO for creating and updating Project
 public class ProjectDto : IValidatableObject
 {
     [Required]
-    [StringLength(50, ErrorMessage = "Project Name is to long. Please provide name needs with less than 50 characters.")]
+    [StringLength(50, ErrorMessage = "Project Name is to long. Please provide name with less than 50 characters.")]
     public string Name { get; set; }
 
     [DataType(DataType.Date)]

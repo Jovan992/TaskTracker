@@ -7,13 +7,14 @@ namespace TaskTracker_DAL.Models
     {
         [Key]
         public int TaskId { get; set; }
-        
+
         [Required]
-        [StringLength(50, ErrorMessage = "Name needs to have less than 50 characters.")]
+        [StringLength(50)]
         public string Name { get; set; }
 
-        [StringLength(300, ErrorMessage = "Description needs to have less than 300 characters.")]
-        public string? Description { get; set; }
+        [Required]
+        [StringLength(300)]
+        public string Description { get; set; }
 
         [Required]
         [ForeignKey("Id")]

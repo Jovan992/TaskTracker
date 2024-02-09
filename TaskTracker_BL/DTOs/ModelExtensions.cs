@@ -58,17 +58,17 @@ namespace TaskTracker_BL.Models
                 );
         }
 
-        public static TaskUnitDto ToTaskUnitDto(this TaskUnit task)
+        public static DbTaskUnitDto ToDbTaskUnitDto(this TaskUnit task)
         {
-            return new TaskUnitDto(
+            return new DbTaskUnitDto(
             task.TaskId,
             task.Name,
-            task.Description!,
+            task.Description,
             task.ProjectId
             );
         }
 
-        public static TaskUnit ToTaskUnit(this TaskUnitDto taskDto)
+        public static TaskUnit ToTaskUnit(this DbTaskUnitDto taskDto)
         {
             return new TaskUnit()
             {
@@ -79,22 +79,12 @@ namespace TaskTracker_BL.Models
             };
         }
 
-        public static TaskUnit ToTaskUnit(this CreateTaskUnitDto createTaskUnitDto)
+        public static TaskUnit ToTaskUnit(this TaskUnitDto createTaskUnitDto)
         {
             return new TaskUnit()
             {
-                Name = createTaskUnitDto.Name,
-                Description = createTaskUnitDto.Description,
-                ProjectId = createTaskUnitDto.ProjectId
-            };
-        }
-
-        public static TaskUnit ToTaskUnit(this UpdateTaskUnitDto createTaskUnitDto)
-        {
-            return new TaskUnit()
-            {
-                Name = createTaskUnitDto.Name,
-                Description = createTaskUnitDto.Description,
+                Name = createTaskUnitDto.Name!,
+                Description = createTaskUnitDto.Description!,
                 ProjectId = createTaskUnitDto.ProjectId
             };
         }
