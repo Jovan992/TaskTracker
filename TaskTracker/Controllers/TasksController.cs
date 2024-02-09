@@ -16,14 +16,14 @@ namespace TaskTracker.Controllers
 
         // GET: api/Tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskUnitDto>>> GetAllTasks()
+        public async Task<ActionResult<IEnumerable<DbTaskUnitDto>>> GetAllTasks()
         {
             return Ok(await taskService.GetAllTasks());
         }
 
         // GET: api/Tasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskUnitDto>> GetTaskById(int id)
+        public async Task<ActionResult<DbTaskUnitDto>> GetTaskById(int id)
         {
             if (id < 1)
             {
@@ -44,7 +44,7 @@ namespace TaskTracker.Controllers
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, UpdateTaskUnitDto updateTaskDto)
+        public async Task<IActionResult> UpdateTask(int id, TaskUnitDto updateTaskDto)
         {
             if (id < 1)
             {
@@ -67,7 +67,7 @@ namespace TaskTracker.Controllers
         // POST: api/Tasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TaskUnit>> CreateTask(CreateTaskUnitDto createTaskDto)
+        public async Task<ActionResult<TaskUnit>> CreateTask(TaskUnitDto createTaskDto)
         {
             var taskDto = await taskService.CreateTask(createTaskDto);
 

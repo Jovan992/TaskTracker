@@ -3,39 +3,23 @@
 namespace TaskTracker_BL.DTOs;
 
 // DTO for getting Users from DB
-public class UserDto
+public class UserDto(int userId, string fullName, string emailId, DateTime createdDate)
 {
-    public UserDto(int userId, string fullName, string emailId, DateTime createdDate)
-    {
-        this.UserId = userId;
-        this.FullName = fullName;
-        this.EmailId = emailId;
-        this.CreatedDate = createdDate;
-    }
-    public int UserId { get; set; }
-    public string FullName { get; set; }
-    public string EmailId { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public int UserId { get; set; } = userId;
+    public string FullName { get; set; } = fullName;
+    public string EmailId { get; set; } = emailId;
+    public DateTime CreatedDate { get; set; } = createdDate;
 }
 
 // DTO for returning LoggedIn User to service
-public class LoggedInUserDto
+public class LoggedInUserDto(int userId, string fullName, string emailId, DateTime createdDate, string userMessage = "", string accessToken = "")
 {
-    public LoggedInUserDto(int userId, string fullName, string emailId, DateTime createdDate, string userMessage ="", string accessToken = "")
-    {
-        this.UserId = userId;
-        this.FullName = fullName;
-        this.EmailId = emailId;
-        this.CreatedDate = createdDate;
-        this.UserMessage = userMessage;
-        this.AccessToken = accessToken;
-    }
-    public int UserId { get; set; }
-    public string FullName { get; set; }
-    public string EmailId { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public string? UserMessage { get; set; }
-    public string? AccessToken { get; set; }
+    public int UserId { get; set; } = userId;
+    public string FullName { get; set; } = fullName;
+    public string EmailId { get; set; } = emailId;
+    public DateTime CreatedDate { get; set; } = createdDate;
+    public string? UserMessage { get; set; } = userMessage;
+    public string? AccessToken { get; set; } = accessToken;
 }
 
 // DTO for User signin
@@ -48,10 +32,12 @@ public class SignInUserDto
     [Required]
     [DataType(DataType.EmailAddress)]
     [EmailAddress]
+    [MaxLength(50)]
     public string EmailId { get; set; }
 
     [Required]
     [MinLength(6)]
+    [DataType(DataType.Password)]
     public string Password { get; set; }
 }
 
@@ -59,10 +45,12 @@ public class SignInUserDto
 public class LogInUserDto {
     [Required]
     [DataType(DataType.EmailAddress)]
-    [EmailAddress] 
+    [EmailAddress]
+    [MaxLength(50)]
     public string EmailId { get; set; }
 
     [Required]
-    [MinLength(6)] 
+    [MinLength(6)]
+    [DataType(DataType.Password)]
     public string Password { get; set; }
 };

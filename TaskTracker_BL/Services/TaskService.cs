@@ -10,12 +10,12 @@ namespace TaskTracker_BL.Services
     {
         private readonly ITaskRepository taskRepository = taskRepository;
 
-        public async Task<IEnumerable<TaskUnitDto>> GetAllTasks()
+        public async Task<IEnumerable<DbTaskUnitDto>> GetAllTasks()
         {
-            return (await taskRepository.GetAllTasks()).Select(x => x.ToTaskUnitDto());
+            return (await taskRepository.GetAllTasks()).Select(x => x.ToDbTaskUnitDto());
         }
 
-        public async Task<TaskUnitDto> GetTaskById(int taskId)
+        public async Task<DbTaskUnitDto> GetTaskById(int taskId)
         {
             TaskUnit taskFound = await taskRepository.GetTaskById(taskId);
 
@@ -25,16 +25,16 @@ namespace TaskTracker_BL.Services
             }
             else
             {
-                return taskFound.ToTaskUnitDto();
+                return taskFound.ToDbTaskUnitDto();
             }
         }
 
-        public async Task<TaskUnitDto> CreateTask(CreateTaskUnitDto createTaskDto)
+        public async Task<DbTaskUnitDto> CreateTask(TaskUnitDto createTaskDto)
         {
-            return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit())).ToTaskUnitDto();
+            return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit())).ToDbTaskUnitDto();
         }
 
-        public async Task UpdateTask(int id, UpdateTaskUnitDto updateTaskDto)
+        public async Task UpdateTask(int id, TaskUnitDto updateTaskDto)
         {
             await taskRepository.UpdateTask(id, updateTaskDto.ToTaskUnit());
         }
