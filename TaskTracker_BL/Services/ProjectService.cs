@@ -4,49 +4,65 @@ using TaskTracker_BL.Models;
 using TaskTracker_DAL.Interfaces;
 using TaskTracker_DAL.Models;
 
-namespace TaskTracker_BL.Services
+namespace TaskTracker_BL.Services;
+
+public class ProjectService(IProjectRepository projectRepository) : IProjectService
 {
-    public class ProjectService(IProjectRepository projectRepository) : IProjectService
+    private readonly IProjectRepository projectRepository = projectRepository;
+
+    public async Task<ExistingProjectDto> CreateProject(ProjectDto projectDto)
     {
-        private readonly IProjectRepository projectRepository = projectRepository;
+        return (await projectRepository.CreateProject(projectDto.ToProject()))
+            .ToExistingProjectDto();
+    }
 
-        public async Task<ExistingProjectDto> CreateProject(ProjectDto projectDto)
+    public async Task<bool> DeleteProject(int projectId)
+    {
+        return await projectRepository.DeleteProject(projectId);
+    }
+
+    public async Task<PagedList<ExistingProjectDto>> GetProjects(ProjectParameters projectParameters)
+    {
+        PagedList<Project> projects = await projectRepository.GetProjects(projectParameters);
+
+        if (projects == null)
         {
-            return (await projectRepository.CreateProject(projectDto.ToProject())).ToExistingProjectDto();
+            return null!;
         }
 
-        public async Task<bool> DeleteProject(int projectId)
-        {
-            return await projectRepository.DeleteProject(projectId);
-        }
+        IQueryable<ExistingProjectDto> results = projects.Items
+            .Select(x => x.ToExistingProjectDto())
+            .AsQueryable();
 
-        public async Task<List<ExistingProjectDto>> GetAllProjects()
-        {
-            return (await projectRepository.GetAllProjects()).Select(x => x.ToExistingProjectDto()).ToList();
-        }
 
-        public async Task<ExistingProjectDto> GetProjectById(int projectId)
-        {
-            Project projectFound = await projectRepository.GetProjectById(projectId);
+        return PagedList<ExistingProjectDto>.ToPagedList(
+            results,
+            projectParameters.PageNumber,
+            projectParameters.PageSize);
 
-            if (projectFound is null)
-            {
-                return null!;
-            }
-            else
-            {
-                return projectFound.ToExistingProjectDto();
-            }
-        }
+    }
 
-        public bool ProjectExists(int projectId)
-        {
-            return projectRepository.ProjectExists(projectId);
-        }
+    public async Task<ExistingProjectDto> GetProjectById(int projectId)
+    {
+        Project projectFound = await projectRepository.GetProjectById(projectId);
 
-        public async Task UpdateProject(int id, ProjectDto projectDto)
+        if (projectFound is null)
         {
-            await projectRepository.UpdateProject(id, projectDto.ToProject());
+            return null!;
         }
+        else
+        {
+            return projectFound.ToExistingProjectDto();
+        }
+    }
+
+    public bool ProjectExists(int projectId)
+    {
+        return projectRepository.ProjectExists(projectId);
+    }
+
+    public async Task UpdateProject(int id, ProjectDto projectDto)
+    {
+        await projectRepository.UpdateProject(id, projectDto.ToProject());
     }
 }

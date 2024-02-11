@@ -2,16 +2,21 @@
 using TaskTracker_DAL.Context;
 using TaskTracker_DAL.Interfaces;
 using TaskTracker_DAL.Models;
+using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Threading.Tasks;
 
 namespace TaskTracker_DAL.Repositories;
 
-public class ProjectRepository(TaskTrackerContext context) : IProjectRepository
+public class ProjectRepository(TaskTrackerContext context, IRepositoryBase<Project> repositoryBase) : IProjectRepository
 {
     private readonly TaskTrackerContext context = context;
+    private readonly IRepositoryBase<Project> repositoryBase = repositoryBase;
 
     public async Task<Project> CreateProject(Project project)
     {
         Project? newProject = (await context.Projects.AddAsync(project)).Entity;
+
         await context.SaveChangesAsync();
 
         return newProject;
@@ -27,19 +32,58 @@ public class ProjectRepository(TaskTrackerContext context) : IProjectRepository
         }
 
         context.Projects.Remove(project);
+
         await context.SaveChangesAsync();
 
         return true;
     }
 
-    public async Task<List<Project>> GetAllProjects()
+    public async Task<PagedList<Project>> GetProjects(ProjectParameters projectParameters)
     {
-        return await context.Projects.Include(x => x.Tasks).ToListAsync();
+        IQueryable<Project> projects = (await context.Projects.Include(x => x.Tasks).AsNoTracking().ToListAsync()).AsQueryable();
+
+        // Filtering results
+        projects = FilterProjects(projects, projectParameters);
+
+        // Sorting results
+        if (!string.IsNullOrEmpty(projectParameters.Sort))
+        {
+            projects = repositoryBase.SortItems(projects, projectParameters);
+        }
+
+        // Paging results if any
+        if (projects.Any())
+        {
+            PagedList<Project> result = new(
+                [.. projects],
+                projects.Count(),
+                projectParameters.PageNumber,
+                projectParameters.PageSize);
+
+            return result;
+        }
+        else
+        {
+            return null!;
+        }
+
     }
 
     public async Task<Project> GetProjectById(int projectId)
     {
-        return (await context.Projects.Include(x => x.Tasks).AsNoTracking().SingleOrDefaultAsync(x => x.ProjectId == projectId))!;
+        Project? projects = await context.Projects
+            .Include(x => x.Tasks)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.ProjectId == projectId);
+
+        return projects!;
+    }
+
+    public async Task UpdateProject(int id, Project project)
+    {
+        context.Projects.Entry(project).State = EntityState.Modified;
+
+        await context.SaveChangesAsync();
     }
 
     public bool ProjectExists(int projectId)
@@ -47,18 +91,55 @@ public class ProjectRepository(TaskTrackerContext context) : IProjectRepository
         return context.Projects.Any(x => x.ProjectId == projectId);
     }
 
-    public async Task UpdateProject(int id, Project project)
+    public IQueryable<Project> FilterProjects(IQueryable<Project> projects, ProjectParameters projectParameters)
     {
-        Project? Entity = await context.Projects
-        .Include(x => x.Tasks)
-        .SingleOrDefaultAsync(x => x.ProjectId == id);
+        // Searching
+        if (!string.IsNullOrEmpty(projectParameters.SearchByName))
+        {
+            projects = projects.Where(x => x.Name.Contains(projectParameters.SearchByName, StringComparison.CurrentCultureIgnoreCase));
+        }
 
-        Entity!.Name = project.Name;
-        Entity.Status = project.Status;
-        Entity.Priority = project.Priority;
+        if (projectParameters.SearchByStatus.HasValue)
+        {
+            projects = projects.Where(x => x.Status == projectParameters.SearchByStatus);
+        }
 
-        context.Projects.Update(Entity);
+        if (projectParameters.SearchByPriority.HasValue)
+        {
+            projects = projects.Where(x => x.Priority == projectParameters.SearchByPriority);
+        }
 
-        await context.SaveChangesAsync();
+        if (projectParameters.SearchByStartDate.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate == DateOnly.FromDateTime((DateTime)projectParameters.SearchByStartDate));
+        }
+
+        if (projectParameters.SearchByCompletionDate.HasValue)
+        {
+            projects = projects.Where(x => x.CompletionDate == DateOnly.FromDateTime((DateTime)projectParameters.SearchByCompletionDate));
+        }
+
+        // Filtering
+        if (projectParameters.MinStartDate.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate >= DateOnly.FromDateTime((DateTime)projectParameters.MinStartDate));
+        }
+
+        if (projectParameters.MaxStartDate.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate <= DateOnly.FromDateTime((DateTime)projectParameters.MaxStartDate));
+        }
+
+        if (projectParameters.MinCompletionDate.HasValue)
+        {
+            projects = projects.Where(x => x.CompletionDate >= DateOnly.FromDateTime((DateTime)projectParameters.MinCompletionDate));
+        }
+
+        if (projectParameters.MaxCompletionDate.HasValue)
+        {
+            projects = projects.Where(x => x.CompletionDate <= DateOnly.FromDateTime((DateTime)projectParameters.MaxCompletionDate));
+        }
+
+        return projects;
     }
 }

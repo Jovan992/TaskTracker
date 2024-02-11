@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker_BL.DTOs;
 using TaskTracker_BL.Interfaces;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController(IProjectService projectService) : ControllerBase
@@ -15,32 +15,33 @@ namespace TaskTracker.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<List<ExistingProjectDto>>> GetAllProjects()
+        public async Task<ActionResult> GetProjects([FromQuery] ProjectParameters projectParameters)
         {
-            var projects = await projectService.GetAllProjects();
+            
+            PagedList<ExistingProjectDto> projects = await projectService.GetProjects(projectParameters);
 
-            if(projects is null)
+            if (projects is null)
             {
-                return NotFound();
+                return NotFound("No projects found.");
             }
+
             return Ok(projects);
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ExistingProjectDto>> GetProjectById(int id)
+        public async Task<ActionResult> GetProjectById(int id)
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest("Id must be greater than 0.");
             }
 
             var project = await projectService.GetProjectById(id);
 
             if (project == null)
             {
-                return NotFound();
+                return NotFound($"Project with id {id} not found.");
             }
 
             return Ok(project);
@@ -53,13 +54,12 @@ namespace TaskTracker.Controllers
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest("Id must be greater than 0.");
             }
 
             if (!projectService.ProjectExists(id))
             {
-                return NotFound();
+                return NotFound($"Project with id {id} not found.");
             }
 
             try
@@ -68,8 +68,7 @@ namespace TaskTracker.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                object message = "A concurrency conflict happened! please retry.";
-                return Conflict(message);
+                return Conflict("A concurrency conflict happened! please retry.");
             }
 
             return NoContent();
@@ -78,7 +77,7 @@ namespace TaskTracker.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ExistingProjectDto>> CreateProject(ProjectDto projectDto)
+        public async Task<ActionResult> CreateProject(ProjectDto projectDto)
         {
             ExistingProjectDto dbProjectDto = await projectService.CreateProject(projectDto);
 
@@ -91,15 +90,14 @@ namespace TaskTracker.Controllers
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest("Id must be greater than 0.");
             }
 
             var project = await projectService.DeleteProject(id);
 
             if (!project)
             {
-                return NotFound();
+                return NotFound($"Project with id {id} not found.");
             }
             else
             {

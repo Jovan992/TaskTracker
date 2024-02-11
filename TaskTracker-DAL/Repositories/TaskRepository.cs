@@ -11,7 +11,7 @@ namespace TaskTracker_DAL.Repositories
 
         public async Task<List<TaskUnit>> GetAllTasks()
         {
-            return await context.Tasks.ToListAsync();
+            return await context.Tasks.AsNoTracking().ToListAsync();
         }
 
         public async Task<TaskUnit> GetTaskById(int taskId)
@@ -21,22 +21,17 @@ namespace TaskTracker_DAL.Repositories
 
         public async Task<TaskUnit> CreateTask(TaskUnit task)
         {
-            await context.Tasks.AddAsync(task);
+            TaskUnit? newTask = (await context.Tasks.AddAsync(task)).Entity;
 
             await context.SaveChangesAsync();
 
-            return task;
+            return newTask;
         }
 
         public async Task UpdateTask(int id, TaskUnit task)
         {
-            TaskUnit? Entity = await context.Tasks.SingleOrDefaultAsync(x => x.TaskId == id);
-
-            Entity!.Name = task.Name;
-            Entity.Description = task.Description;
-            Entity.ProjectId = task.ProjectId;
-
-            context.Tasks.Update(Entity);
+      
+            context.Tasks.Entry(task).State = EntityState.Modified;
 
             await context.SaveChangesAsync();
         }
@@ -51,6 +46,7 @@ namespace TaskTracker_DAL.Repositories
             }
 
             context.Tasks.Remove(task);
+
             await context.SaveChangesAsync();
 
             return true;
