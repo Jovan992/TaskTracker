@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using TaskTracker_BL;
+using TaskTracker_DAL;
 
 namespace TaskTracker
 {
@@ -17,6 +17,7 @@ namespace TaskTracker
                     Title = "jwtToken_Auth_Api",
                     Version = "v1"
                 });
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -26,6 +27,7 @@ namespace TaskTracker
                     In = ParameterLocation.Header,
                     Description = "Here Enter JWT Token with bearer format like bearer[space] token"
                 });
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -37,9 +39,10 @@ namespace TaskTracker
                                 Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
+
                 c.SchemaFilter<DateOnlySchemaFilter>();
             });
         }
@@ -61,6 +64,5 @@ namespace TaskTracker
                 };
             });
         }
-
     }
 }

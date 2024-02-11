@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker_BL.DTOs;
 using TaskTracker_BL.Interfaces;
+using TaskTracker_BL.Services;
 using TaskTracker_DAL.Models;
 
 namespace TaskTracker.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TasksController(ITaskService taskService) : ControllerBase
@@ -16,9 +17,11 @@ namespace TaskTracker.Controllers
 
         // GET: api/Tasks
         [HttpGet]
-        public async Task<ActionResult<List<DbTaskUnitDto>>> GetAllTasks()
+        public async Task<ActionResult<List<DbTaskUnitDto>>> GetTasks()
         {
-            return Ok(await taskService.GetAllTasks());
+            var tasks = await taskService.GetTasks();
+
+            return Ok(tasks);
         }
 
         // GET: api/Tasks/5
@@ -48,8 +51,12 @@ namespace TaskTracker.Controllers
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest("Id must be greater than 0.");
+            }
+
+            if (!taskService.TaskExists(id))
+            {
+                return NotFound($"Project with id {id} not found.");
             }
 
             try
@@ -58,7 +65,7 @@ namespace TaskTracker.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw;
+                return Conflict("A concurrency conflict happened! please retry.");
             }
 
             return NoContent();
@@ -69,9 +76,9 @@ namespace TaskTracker.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskUnit>> CreateTask(TaskUnitDto createTaskDto)
         {
-            var taskDto = await taskService.CreateTask(createTaskDto);
+            DbTaskUnitDto dbTaskDto = await taskService.CreateTask(createTaskDto);
 
-            return CreatedAtAction(nameof(GetTaskById), new { id = taskDto.TaskId }, taskDto);
+            return CreatedAtAction(nameof(GetTaskById), new { id = dbTaskDto.TaskId }, dbTaskDto);
         }
 
         // DELETE: api/Tasks/5

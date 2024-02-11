@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskTracker_DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class _1102 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,9 +18,9 @@ namespace TaskTracker_DAL.Migrations
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: true),
+                    CompletionDate = table.Column<DateTime>(type: "date", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -35,7 +35,7 @@ namespace TaskTracker_DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
-                    EmailId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -51,7 +51,7 @@ namespace TaskTracker_DAL.Migrations
                     TaskId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

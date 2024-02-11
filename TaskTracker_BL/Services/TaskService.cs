@@ -10,9 +10,11 @@ namespace TaskTracker_BL.Services
     {
         private readonly ITaskRepository taskRepository = taskRepository;
 
-        public async Task<List<DbTaskUnitDto>> GetAllTasks()
+        public async Task<List<DbTaskUnitDto>> GetTasks()
         {
-            return (await taskRepository.GetAllTasks()).Select(x => x.ToDbTaskUnitDto()).ToList();
+            return (await taskRepository.GetAllTasks())
+                .Select(x => x.ToDbTaskUnitDto())
+                .ToList();
         }
 
         public async Task<DbTaskUnitDto> GetTaskById(int taskId)
@@ -31,7 +33,8 @@ namespace TaskTracker_BL.Services
 
         public async Task<DbTaskUnitDto> CreateTask(TaskUnitDto createTaskDto)
         {
-            return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit())).ToDbTaskUnitDto();
+            return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit()))
+                .ToDbTaskUnitDto();
         }
 
         public async Task UpdateTask(int id, TaskUnitDto updateTaskDto)

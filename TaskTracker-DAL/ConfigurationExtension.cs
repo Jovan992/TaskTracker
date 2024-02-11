@@ -15,6 +15,7 @@ namespace TaskTracker_DAL
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
         }
     }
 }

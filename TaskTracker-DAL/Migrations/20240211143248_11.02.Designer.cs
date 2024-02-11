@@ -12,8 +12,8 @@ using TaskTracker_DAL.Context;
 namespace TaskTracker_DAL.Migrations
 {
     [DbContext(typeof(TaskTrackerContext))]
-    [Migration("20240205114805_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240211143248_11.02")]
+    partial class _1102
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace TaskTracker_DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
                     b.Property<DateTime?>("CompletionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -45,9 +45,9 @@ namespace TaskTracker_DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ProjectId");
@@ -64,6 +64,7 @@ namespace TaskTracker_DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -95,7 +96,8 @@ namespace TaskTracker_DAL.Migrations
 
                     b.Property<string>("EmailId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FullName")
                         .IsRequired()

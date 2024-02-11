@@ -1,16 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Context
 {
-    public class TaskTrackerContext : DbContext
+    public class TaskTrackerContext(DbContextOptions<TaskTrackerContext> options) : DbContext(options)
     {
-        public TaskTrackerContext(DbContextOptions<TaskTrackerContext> options)
-            : base(options)
-        {
-        }
-
         protected override void ConfigureConventions(ModelConfigurationBuilder builder)
         {
             base.ConfigureConventions(builder);
