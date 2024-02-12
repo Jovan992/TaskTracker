@@ -1,14 +1,15 @@
-﻿using TaskTracker_DAL.Models;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Interfaces
 {
     public interface ITaskRepository
     {
-        Task<List<TaskUnit>> GetAllTasks();
-        Task<TaskUnit> GetTaskById(int taskId);
-        Task<TaskUnit> CreateTask(TaskUnit task);
-        Task UpdateTask(int id, TaskUnit task);
-        Task<bool> DeleteTask(int taskId);
-        bool TaskExists(int taskId);
+        Task<ResultData<TaskUnit>> CreateTask(TaskUnit task);
+        Task<ResultData<PagedList<TaskUnit>>> GetTasks(TaskParameters taskParameters);
+        Task<ResultData<TaskUnit>> GetTaskById(int taskId);
+        Task<ResultData<TaskUnit>> UpdateTask(TaskUnit task);
+        Task<ResultData<TaskUnit>> DeleteTask(int taskId);
+        IQueryable<TaskUnit> FilterTasks(IQueryable<TaskUnit> tasks, TaskParameters taskParameters);
     }
 }

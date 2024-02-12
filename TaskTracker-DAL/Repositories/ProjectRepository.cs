@@ -3,8 +3,7 @@ using TaskTracker_DAL.Context;
 using TaskTracker_DAL.Interfaces;
 using TaskTracker_DAL.Models;
 using System.Linq.Dynamic.Core;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Threading.Tasks;
+using CommonUtils.ResultDataResponse;
 
 namespace TaskTracker_DAL.Repositories;
 
@@ -13,34 +12,21 @@ public class ProjectRepository(TaskTrackerContext context, IRepositoryBase<Proje
     private readonly TaskTrackerContext context = context;
     private readonly IRepositoryBase<Project> repositoryBase = repositoryBase;
 
-    public async Task<Project> CreateProject(Project project)
+    private readonly string notFoundByIdMessage = "Project with given id not found.";
+
+    public async Task<ResultData<Project>> CreateProject(Project project)
     {
-        Project? newProject = (await context.Projects.AddAsync(project)).Entity;
+        Project? createdProject = (await context.Projects.AddAsync(project)).Entity;
 
         await context.SaveChangesAsync();
 
-        return newProject;
+        return new CreatedAtActionResultData<Project>(createdProject);
     }
 
-    public async Task<bool> DeleteProject(int projectId)
+    public async Task<ResultData<PagedList<Project>>> GetProjects(ProjectParameters projectParameters)
     {
-        Project? project = await context.Projects.FindAsync(projectId);
-
-        if (project == null)
-        {
-            return false;
-        }
-
-        context.Projects.Remove(project);
-
-        await context.SaveChangesAsync();
-
-        return true;
-    }
-
-    public async Task<PagedList<Project>> GetProjects(ProjectParameters projectParameters)
-    {
-        IQueryable<Project> projects = (await context.Projects.Include(x => x.Tasks).AsNoTracking().ToListAsync()).AsQueryable();
+        IQueryable<Project> projects = context.Projects.Include(x => x.Tasks)
+            .AsQueryable();
 
         // Filtering results
         projects = FilterProjects(projects, projectParameters);
@@ -51,44 +37,65 @@ public class ProjectRepository(TaskTrackerContext context, IRepositoryBase<Proje
             projects = repositoryBase.SortItems(projects, projectParameters);
         }
 
-        // Paging results if any
-        if (projects.Any())
+        if (!projects.Any())
         {
-            PagedList<Project> result = new(
-                [.. projects],
-                projects.Count(),
-                projectParameters.PageNumber,
-                projectParameters.PageSize);
-
-            return result;
-        }
-        else
-        {
-            return null!;
+            return new NotFoundResultData<PagedList<Project>>(notFoundByIdMessage);
         }
 
+        // Paging results
+        PagedList<Project> result = new(
+               await projects.ToListAsync(),
+               projects.Count(),
+               projectParameters.PageNumber,
+               projectParameters.PageSize);
+
+        return new OkResultData<PagedList<Project>>(result);
     }
 
-    public async Task<Project> GetProjectById(int projectId)
+    public async Task<ResultData<Project>> GetProjectById(int projectId)
     {
-        Project? projects = await context.Projects
+        Project? project = await context.Projects
             .Include(x => x.Tasks)
-            .AsNoTracking()
             .SingleOrDefaultAsync(x => x.ProjectId == projectId);
 
-        return projects!;
+        if(project is null)
+        {
+            return new NotFoundResultData<Project>(notFoundByIdMessage);
+        }
+
+        return new OkResultData<Project>(project);
     }
 
-    public async Task UpdateProject(int id, Project project)
+    public async Task<ResultData<Project>> UpdateProject(Project project)
     {
+        bool isProjectFound = await context.Projects.AnyAsync(x => x.ProjectId == project.ProjectId);
+
+        if (!isProjectFound)
+        {
+            return new NotFoundResultData<Project>(notFoundByIdMessage);
+        }
+
         context.Projects.Entry(project).State = EntityState.Modified;
 
         await context.SaveChangesAsync();
+
+        return new NoContentResultData<Project>();
     }
 
-    public bool ProjectExists(int projectId)
+    public async Task<ResultData<Project>> DeleteProject(int projectId)
     {
-        return context.Projects.Any(x => x.ProjectId == projectId);
+        Project? project = await context.Projects.FindAsync(projectId);
+
+        if (project is null)
+        {
+            return new NotFoundResultData<Project>(notFoundByIdMessage);
+        }
+
+        context.Projects.Remove(project);
+
+        await context.SaveChangesAsync();
+
+        return new NoContentResultData<Project>();
     }
 
     public IQueryable<Project> FilterProjects(IQueryable<Project> projects, ProjectParameters projectParameters)

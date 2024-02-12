@@ -4,7 +4,6 @@ using TaskTracker_BL.Interfaces;
 
 namespace TaskTracker.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -18,7 +17,7 @@ namespace TaskTracker.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        public async Task<ActionResult<UserDto>> SignIn(SignInUserDto userDto)
+        public async Task<IActionResult> SignIn(SignInUserDto userDto)
         {
             UserDto? user = await userService.SignInUser(userDto);
 
@@ -47,13 +46,5 @@ namespace TaskTracker.Controllers
                 return BadRequest("No Data Posted");
             }
         }
-
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<List<UserDto>>> GetAllUsers()
-        {
-            return Ok(await userService.GetAllUsers());
-        }
     }
 }
-

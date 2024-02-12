@@ -11,9 +11,8 @@ namespace TaskTracker.Controllers
         public IActionResult Error()
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            var errorMessage = context!.Error.Message;
 
-            return Problem(detail: errorMessage);
+            return Problem(detail: context!.Error.ToString());
         }
     }
 }

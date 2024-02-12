@@ -10,7 +10,11 @@ namespace TaskTracker_DAL
     {
         public static void RegisterDataAccessLayer(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<TaskTrackerContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<TaskTrackerContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
