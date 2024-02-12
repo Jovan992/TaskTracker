@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace TaskTracker_DAL;
+namespace CommonUtils.DateTime;
 
 public class DateOnlySchemaFilter : ISchemaFilter
 {

@@ -1,4 +1,5 @@
-﻿using TaskTracker_BL.DTOs;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_BL.DTOs;
 using TaskTracker_BL.Interfaces;
 using TaskTracker_BL.Models;
 using TaskTracker_DAL.Interfaces;
@@ -10,46 +11,51 @@ namespace TaskTracker_BL.Services
     {
         private readonly ITaskRepository taskRepository = taskRepository;
 
-        public async Task<List<DbTaskUnitDto>> GetTasks()
+        public async Task<ResultData<TaskDto>> CreateTask(CreateTaskDto createTaskDto)
         {
-            return (await taskRepository.GetAllTasks())
-                .Select(x => x.ToDbTaskUnitDto())
-                .ToList();
+            ResultData<TaskUnit> result = await taskRepository.CreateTask(createTaskDto.ToTaskUnit());
+
+            return new CreatedAtActionResultData<TaskDto>(result.Data!.ToTaskDto());
         }
 
-        public async Task<DbTaskUnitDto> GetTaskById(int taskId)
+        public async Task<ResultData<PagedList<TaskDto>>> GetTasks(TaskParameters taskParameters)
         {
-            TaskUnit taskFound = await taskRepository.GetTaskById(taskId);
+            ResultData<PagedList<TaskUnit>> result = await taskRepository.GetTasks(taskParameters);
 
-            if (taskFound is null)
+            if (result is NotFoundResultData<PagedList<TaskUnit>>)
             {
-                return null!;
+                return new NotFoundResultData<PagedList<TaskDto>>(result.Message);
             }
-            else
+
+            PagedList<TaskDto> taskDtoList = PagedList<TaskDto>.ToPagedList(
+                result.Data!.Items
+                .Select(x => x.ToTaskDto()).AsQueryable(),
+                result.Data.CurrentPage,
+                result.Data.PageSize);
+
+            return new OkResultData<PagedList<TaskDto>>(taskDtoList);
+        }
+
+        public async Task<ResultData<TaskDto>> GetTaskById(int taskId)
+        {
+            ResultData<TaskUnit> taskFound = await taskRepository.GetTaskById(taskId);
+
+            if (taskFound is NotFoundResultData<TaskUnit>)
             {
-                return taskFound.ToDbTaskUnitDto();
+                return new NotFoundResultData<TaskDto>(taskFound.Message);
             }
+
+            return new OkResultData<TaskDto>(taskFound.Data!.ToTaskDto());
         }
 
-        public async Task<DbTaskUnitDto> CreateTask(TaskUnitDto createTaskDto)
+        public async Task<ResultData<TaskUnit>> UpdateTask(UpdateTaskDto updateTaskDto)
         {
-            return (await taskRepository.CreateTask(createTaskDto.ToTaskUnit()))
-                .ToDbTaskUnitDto();
+            return await taskRepository.UpdateTask(updateTaskDto.ToTaskUnit());
         }
 
-        public async Task UpdateTask(int id, TaskUnitDto updateTaskDto)
-        {
-            await taskRepository.UpdateTask(id, updateTaskDto.ToTaskUnit());
-        }
-
-        public async Task<bool> DeleteTask(int taskId)
+        public async Task<ResultData<TaskUnit>> DeleteTask(int taskId)
         {
             return await taskRepository.DeleteTask(taskId);
-        }
-
-        public bool TaskExists(int taskId)
-        {
-            return taskRepository.TaskExists(taskId);
         }
     }
 }

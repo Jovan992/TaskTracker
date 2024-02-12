@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonUtils.ResultDataResponse;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker_BL.DTOs;
 using TaskTracker_BL.Interfaces;
@@ -6,82 +8,83 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController(IProjectService projectService) : ControllerBase
     {
+        private readonly string idNotGreaterThanZero = "Id must be greater than 0.";
+
         private readonly IProjectService projectService = projectService;
+
+        // POST: api/Projects
+        [HttpPost]
+        public async Task<ActionResult> CreateProject(CreateProjectDto createProjectDto)
+        {
+            ResultData<ProjectDto>? result = await projectService.CreateProject(createProjectDto);
+
+            return result.ToCreatedAtActionResult(nameof(GetProjectById), new { id = result.Data!.Id });
+        }
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult> GetProjects([FromQuery] ProjectParameters projectParameters)
+        // PagedList<ProjectDto>
+        public async Task<IActionResult> GetProjects([FromQuery] ProjectParameters projectParameters)
         {
-            
-            PagedList<ExistingProjectDto> projects = await projectService.GetProjects(projectParameters);
+            ResultData<PagedList<ProjectDto>> projects = await projectService.GetProjects(projectParameters);
 
-            if (projects is null)
+            if (projects is NotFoundResultData<PagedList<ProjectDto>>)
             {
-                return NotFound("No projects found.");
+                return projects.ToNotFoundActionResult();
             }
 
-            return Ok(projects);
+            return projects.ToOkActionResult();
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetProjectById(int id)
+        public async Task<IActionResult> GetProjectById(int id)
         {
             if (id < 1)
             {
-                return BadRequest("Id must be greater than 0.");
+                return BadRequest(idNotGreaterThanZero);
             }
 
-            var project = await projectService.GetProjectById(id);
+            ResultData<ProjectDto> project = await projectService.GetProjectById(id);
 
-            if (project == null)
+            if (project is NotFoundResultData<ProjectDto>)
             {
-                return NotFound($"Project with id {id} not found.");
+                return project.ToNotFoundActionResult();
             }
 
-            return Ok(project);
+            return project.ToOkActionResult();
         }
 
         // PUT: api/Projects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, ProjectDto projectDto)
+        public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto updateProjectDto)
         {
             if (id < 1)
             {
-                return BadRequest("Id must be greater than 0.");
-            }
-
-            if (!projectService.ProjectExists(id))
-            {
-                return NotFound($"Project with id {id} not found.");
+                return BadRequest(idNotGreaterThanZero);
             }
 
             try
             {
-                await projectService.UpdateProject(id, projectDto);
+                ResultData<Project> result = await projectService.UpdateProject(updateProjectDto);
+
+                if (result is NotFoundResultData<Project>)
+                {
+                    return result.ToNotFoundActionResult();
+                }
+
+                return result.ToOkActionResult();
+
             }
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict("A concurrency conflict happened! please retry.");
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Projects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult> CreateProject(ProjectDto projectDto)
-        {
-            ExistingProjectDto dbProjectDto = await projectService.CreateProject(projectDto);
-
-            return CreatedAtAction(nameof(GetProjectById), new { id = dbProjectDto.ProjectId }, dbProjectDto);
         }
 
         // DELETE: api/Projects/5
@@ -90,19 +93,17 @@ namespace TaskTracker.Controllers
         {
             if (id < 1)
             {
-                return BadRequest("Id must be greater than 0.");
+                return BadRequest(idNotGreaterThanZero);
             }
 
-            var project = await projectService.DeleteProject(id);
+            ResultData<Project> result = await projectService.DeleteProject(id);
 
-            if (!project)
+            if (result is NotFoundResultData<Project>)
             {
-                return NotFound($"Project with id {id} not found.");
+                return result.ToNotFoundActionResult();
             }
-            else
-            {
-                return NoContent();
-            }
+
+            return NoContent();
         }
     }
 }

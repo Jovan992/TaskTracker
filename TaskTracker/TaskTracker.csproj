@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonUtils\CommonUtils.csproj" />
     <ProjectReference Include="..\TaskTracker-DAL\TaskTracker_DAL.csproj" />
     <ProjectReference Include="..\TaskTracker_BL\TaskTracker_BL.csproj" />
   </ItemGroup>

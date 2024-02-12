@@ -1,16 +1,15 @@
-﻿using TaskTracker_DAL.Models;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_DAL.Interfaces
 {
     public interface IProjectRepository
     {
-        Task<PagedList<Project>> GetProjects(ProjectParameters projectParameters);
-        Task<Project> GetProjectById(int projectId);
-        Task<Project> CreateProject(Project project);
-        Task UpdateProject(int id, Project project);
+        Task<ResultData<Project>> CreateProject(Project project);
+        Task<ResultData<PagedList<Project>>> GetProjects(ProjectParameters projectParameters);
+        Task<ResultData<Project>> GetProjectById(int projectId);
+        Task<ResultData<Project>> UpdateProject(Project project);
+        Task<ResultData<Project>> DeleteProject(int projectId);
         IQueryable<Project> FilterProjects(IQueryable<Project> projects, ProjectParameters projectParameters);
-
-        bool ProjectExists(int projectId);
-        Task<bool> DeleteProject(int projectId);
     }
 }
