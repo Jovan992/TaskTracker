@@ -23,6 +23,11 @@ namespace TaskTracker_DAL.Repositories
                     .Where(e => e.EmailId == userData.EmailId && e.Password == userData.Password)
                     .FirstOrDefaultAsync();
 
+            if(userLoggedIn is null)
+            {
+                return null!;
+            }
+
             return userLoggedIn!;
         }
 
