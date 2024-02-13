@@ -2,7 +2,6 @@
 
 namespace TaskTracker_BL.DTOs;
 
-// DTO for getting Users from DB
 public class UserDto(int userId, string fullName, string emailId, DateTime createdDate)
 {
     public int UserId { get; set; } = userId;
@@ -11,7 +10,6 @@ public class UserDto(int userId, string fullName, string emailId, DateTime creat
     public DateTime CreatedDate { get; set; } = createdDate;
 }
 
-// DTO for returning LoggedIn User to service
 public class LoggedInUserDto(int userId, string fullName, string emailId, DateTime createdDate, string userMessage = "", string accessToken = "")
 {
     public int UserId { get; set; } = userId;
@@ -22,7 +20,6 @@ public class LoggedInUserDto(int userId, string fullName, string emailId, DateTi
     public string? AccessToken { get; set; } = accessToken;
 }
 
-// DTO for User signin
 public class SignInUserDto
 {
     [Required]

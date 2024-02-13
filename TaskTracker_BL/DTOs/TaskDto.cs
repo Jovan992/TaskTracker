@@ -2,10 +2,9 @@
 
 namespace TaskTracker_BL.DTOs;
 
-// DTO for getting Tasks from DB
-public class DbTaskUnitDto
+public class TaskDto
 {
-    public DbTaskUnitDto(int taskId, string name, string description, int projectId)
+    public TaskDto(int taskId, string name, string description, int projectId)
     {
         this.TaskId = taskId;
         this.Name = name;
@@ -18,11 +17,10 @@ public class DbTaskUnitDto
     public int ProjectId { get; set; }
 }
 
-// DTO for creating new Task
-public class TaskUnitDto
+public class CreateTaskDto
 {
     [Required]
-    [StringLength(50, ErrorMessage = "Task Name is to long. Please provide name  with less than 50 characters.")]
+    [StringLength(50, ErrorMessage = "Task Name is to long. Please provide name with less than 50 characters.")]
 
     public string? Name { get; set; }
 
@@ -32,4 +30,10 @@ public class TaskUnitDto
     public string? Description { get; set; }
     [Required]
     public int ProjectId { get; set; }
+}
+
+public class UpdateTaskDto : CreateTaskDto
+{
+    [Required]
+    public int TaskId { get; set; }
 }

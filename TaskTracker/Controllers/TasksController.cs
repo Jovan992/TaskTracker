@@ -1,84 +1,87 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CommonUtils.ResultDataResponse;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker_BL.DTOs;
 using TaskTracker_BL.Interfaces;
-using TaskTracker_BL.Services;
 using TaskTracker_DAL.Models;
 
 namespace TaskTracker.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TasksController(ITaskService taskService) : ControllerBase
     {
         private readonly ITaskService taskService = taskService;
+        private readonly string idNotGreaterThanZero = "Id must be greater than 0.";
+
+        // POST: api/Tasks
+        [HttpPost]
+        public async Task<IActionResult> CreateTask(CreateTaskDto createTaskDto)
+        {
+            ResultData<TaskDto> result = await taskService.CreateTask(createTaskDto);
+
+            return result.ToCreatedAtActionResult(nameof(GetTaskById), new { id = result.Data!.TaskId });
+        }
 
         // GET: api/Tasks
         [HttpGet]
-        public async Task<ActionResult<List<DbTaskUnitDto>>> GetTasks()
+        public async Task<IActionResult> GetTasks([FromQuery] TaskParameters taskParameters)
         {
-            var tasks = await taskService.GetTasks();
+            ResultData<PagedList<TaskDto>> tasks = await taskService.GetTasks(taskParameters);
 
-            return Ok(tasks);
+            if (tasks is NotFoundResultData<PagedList<TaskDto>>)
+            {
+                return tasks.ToNotFoundActionResult();
+            }
+
+            return tasks.ToOkActionResult();
         }
 
         // GET: api/Tasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<DbTaskUnitDto>> GetTaskById(int id)
+        public async Task<IActionResult> GetTaskById(int id)
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest(idNotGreaterThanZero);
             }
 
-            var task = await taskService.GetTaskById(id);
+            ResultData<TaskDto> task = await taskService.GetTaskById(id);
 
-            if (task == null)
+            if (task is NotFoundResultData<TaskDto>)
             {
-                return NotFound();
+                return task.ToNotFoundActionResult();
             }
 
-            return Ok(task);
+            return task.ToOkActionResult();
         }
 
         // PUT: api/Tasks/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskUnitDto updateTaskDto)
+        public async Task<IActionResult> UpdateTask(int id, UpdateTaskDto updateTaskDto)
         {
             if (id < 1)
             {
-                return BadRequest("Id must be greater than 0.");
-            }
-
-            if (!taskService.TaskExists(id))
-            {
-                return NotFound($"Project with id {id} not found.");
+                return BadRequest(idNotGreaterThanZero);
             }
 
             try
             {
-                await taskService.UpdateTask(id, updateTaskDto);
+                ResultData<TaskUnit> result = await taskService.UpdateTask(updateTaskDto);
+
+                if (result is NotFoundResultData<TaskUnit>)
+                {
+                    return result.ToNotFoundActionResult();
+                }
+
+                return result.ToOkActionResult();
             }
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict("A concurrency conflict happened! please retry.");
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Tasks
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<TaskUnit>> CreateTask(TaskUnitDto createTaskDto)
-        {
-            DbTaskUnitDto dbTaskDto = await taskService.CreateTask(createTaskDto);
-
-            return CreatedAtAction(nameof(GetTaskById), new { id = dbTaskDto.TaskId }, dbTaskDto);
         }
 
         // DELETE: api/Tasks/5
@@ -87,20 +90,17 @@ namespace TaskTracker.Controllers
         {
             if (id < 1)
             {
-                ModelState.AddModelError("Id", "Id must be greater than 0.");
-                return BadRequest(ModelState);
+                return BadRequest(idNotGreaterThanZero);
             }
 
-            var task = await taskService.DeleteTask(id);
+            ResultData<TaskUnit> result = await taskService.DeleteTask(id);
 
-            if (!task)
+            if (result is NotFoundResultData<TaskUnit>)
             {
-                return NotFound();
+                return result.ToNotFoundActionResult();
             }
-            else
-            {
-                return NoContent();
-            }
+
+            return NoContent();
         }
     }
 }

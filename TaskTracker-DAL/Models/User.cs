@@ -14,6 +14,7 @@ namespace TaskTracker_DAL.Models
         [Required]
         [MaxLength(50)]
         public string EmailId { get; set; }
+
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
