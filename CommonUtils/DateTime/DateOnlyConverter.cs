@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace TaskTracker_DAL;
 
-public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
+namespace CommonUtils.DateTime;
+
+public class DateOnlyConverter : ValueConverter<DateOnly, System.DateTime>
 {
     public DateOnlyConverter() : base(
         dateOnly => dateOnly.ToDateTime(TimeOnly.MinValue),

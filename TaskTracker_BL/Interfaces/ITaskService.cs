@@ -1,14 +1,15 @@
-﻿using TaskTracker_BL.DTOs;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_BL.DTOs;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Interfaces
 {
     public interface ITaskService
     {
-        Task<List<DbTaskUnitDto>> GetTasks();
-        Task<DbTaskUnitDto> GetTaskById(int taskId);
-        Task<DbTaskUnitDto> CreateTask(TaskUnitDto createTaskDto);
-        Task UpdateTask(int id, TaskUnitDto taskDto);
-        Task<bool> DeleteTask(int taskId);
-        bool TaskExists(int taskId);
+        Task<ResultData<TaskDto>> CreateTask(CreateTaskDto createTaskDto);
+        Task<ResultData<PagedList<TaskDto>>> GetTasks(TaskParameters taskParameters);
+        Task<ResultData<TaskDto>> GetTaskById(int taskId);
+        Task<ResultData<TaskUnit>> UpdateTask(UpdateTaskDto updateTaskDto);
+        Task<ResultData<TaskUnit>> DeleteTask(int taskId);
     }
 }

@@ -1,14 +1,14 @@
-﻿using TaskTracker_BL.DTOs;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_BL.DTOs;
 using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Interfaces;
 
 public interface IProjectService
 {
-    Task<PagedList<ExistingProjectDto>> GetProjects(ProjectParameters projectParameters);
-    Task<ExistingProjectDto> GetProjectById(int projectId);
-    Task<ExistingProjectDto> CreateProject(ProjectDto projectDto);
-    Task UpdateProject(int id, ProjectDto ProjectDto);
-    bool ProjectExists(int projectId);
-    Task<bool> DeleteProject(int projectId);
+    Task<ResultData<ProjectDto>> CreateProject(CreateProjectDto createProjectDto);
+    Task<ResultData<PagedList<ProjectDto>>> GetProjects(ProjectParameters projectParameters);
+    Task<ResultData<ProjectDto>> GetProjectById(int projectId);
+    Task<ResultData<Project>> UpdateProject(UpdateProjectDto updateProjectDto);
+    Task<ResultData<Project>> DeleteProject(int projectId);
 }

@@ -45,9 +45,9 @@ public static class ModelExtensions
             );
     }
 
-    public static ExistingProjectDto ToExistingProjectDto(this Project project)
+    public static ProjectDto ToProjectDto(this Project project)
     {
-        return new ExistingProjectDto(
+        return new ProjectDto(
             project.ProjectId,
             project.Name,
             project.StartDate,
@@ -58,7 +58,7 @@ public static class ModelExtensions
             );
     }
 
-    public static Project ToProject(this ProjectDto projectDto)
+    public static Project ToProject(this CreateProjectDto projectDto)
     {
         DateOnly? startDate = null;
         DateOnly? completionDate = null;
@@ -82,10 +82,36 @@ public static class ModelExtensions
             Priority = projectDto.Priority,
         };
     }
-
-    public static DbTaskUnitDto ToDbTaskUnitDto(this TaskUnit task)
+    
+    public static Project ToProject(this UpdateProjectDto createProjectDto)
     {
-        return new DbTaskUnitDto(
+        DateOnly? startDate = null;
+        DateOnly? completionDate = null;
+
+        if (createProjectDto.StartDate != null)
+        {
+            startDate = DateOnly.FromDateTime((DateTime)createProjectDto.StartDate!);
+        }
+
+        if (createProjectDto.CompletionDate != null)
+        {
+            completionDate = DateOnly.FromDateTime((DateTime)createProjectDto.CompletionDate!);
+        }
+
+        return new Project()
+        {
+            ProjectId = createProjectDto.ProjectId,
+            Name = createProjectDto.Name,
+            StartDate = startDate,
+            CompletionDate = completionDate,
+            Status = createProjectDto.Status,
+            Priority = createProjectDto.Priority,
+        };
+    }
+
+    public static TaskDto ToTaskDto(this TaskUnit task)
+    {
+        return new TaskDto(
         task.TaskId,
         task.Name,
         task.Description,
@@ -93,13 +119,23 @@ public static class ModelExtensions
         );
     }
 
-    public static TaskUnit ToTaskUnit(this TaskUnitDto createTaskUnitDto)
+    public static TaskUnit ToTaskUnit(this CreateTaskDto createTaskUnitDto)
     {
         return new TaskUnit()
         {
             Name = createTaskUnitDto.Name!,
             Description = createTaskUnitDto.Description!,
             ProjectId = createTaskUnitDto.ProjectId
+        };
+    }
+    public static TaskUnit ToTaskUnit(this UpdateTaskDto updateTaskUnitDto)
+    {
+        return new TaskUnit()
+        {
+            TaskId = updateTaskUnitDto.TaskId,
+            Name = updateTaskUnitDto.Name!,
+            Description = updateTaskUnitDto.Description!,
+            ProjectId = updateTaskUnitDto.ProjectId
         };
     }
 }

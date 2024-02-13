@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace TaskTracker_DAL;
+namespace CommonUtils.DateTime;
 
 public class DateOnlyComparer : ValueComparer<DateOnly>
 {
