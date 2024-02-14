@@ -1,6 +1,6 @@
 ﻿namespace CommonUtils.ResultDataResponse;
 
-public class ResultData<T>
+public abstract class ResultData<T>
 {
     public ResultData(string message = "", T data = default!)
     {

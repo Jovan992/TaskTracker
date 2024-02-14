@@ -1,10 +1,12 @@
-﻿using TaskTracker_BL.DTOs;
+﻿using CommonUtils.ResultDataResponse;
+using TaskTracker_BL.DTOs;
+using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Interfaces
 {
     public interface IUserService
     {
-        Task<LoggedInUserDto> LogInUser(LogInUserDto userData);
-        Task<UserDto> SignInUser(SignInUserDto userData);
+        Task<ResultData<LoggedInUserDto>> LogInUser(LogInUserDto userData);
+        Task<ResultData<User>> SignInUser(SignInUserDto userData);
     }
 }

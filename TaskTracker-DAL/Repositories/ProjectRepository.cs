@@ -13,10 +13,11 @@ public class ProjectRepository(TaskTrackerContext context, IRepositoryBase<Proje
     private readonly IRepositoryBase<Project> repositoryBase = repositoryBase;
 
     private readonly string notFoundByIdMessage = "Project with given id not found.";
+    private readonly string noProjectsFoundMessage = "No projects found.";
 
     public async Task<ResultData<Project>> CreateProject(Project project)
     {
-        Project? createdProject = (await context.Projects.AddAsync(project)).Entity;
+        Project createdProject = (await context.Projects.AddAsync(project)).Entity;
 
         await context.SaveChangesAsync();
 
@@ -39,7 +40,7 @@ public class ProjectRepository(TaskTrackerContext context, IRepositoryBase<Proje
 
         if (!projects.Any())
         {
-            return new NotFoundResultData<PagedList<Project>>(notFoundByIdMessage);
+            return new NotFoundResultData<PagedList<Project>>(noProjectsFoundMessage);
         }
 
         // Paging results

@@ -57,6 +57,5 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     public async Task<ResultData<Project>> DeleteProject(int projectId)
     {
         return await projectRepository.DeleteProject(projectId);
-
     }
 }

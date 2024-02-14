@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CommonUtils.ResultDataResponse;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,7 +13,7 @@ using TaskTracker_DAL.Models;
 
 namespace TaskTracker_BL.Services;
 
-internal class UserService : IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
     private readonly IConfiguration configuration;
@@ -22,16 +24,16 @@ internal class UserService : IUserService
         this.configuration = configuration;
     }
 
-    public async Task<LoggedInUserDto> LogInUser(LogInUserDto userData)
+    public async Task<ResultData<LoggedInUserDto>> LogInUser(LogInUserDto userData)
     {
-        User? userFound = await userRepository.LogInUser(userData.ToUser());
+        ResultData<User> userFound = await userRepository.LogInUser(userData.ToUser());
 
-        if (userFound is null)
+        if (userFound.Data is null)
         {
-            return null!;
+            return new BadRequestResultData<LoggedInUserDto>(userFound.Message!);
         }
 
-        LoggedInUserDto userLoggedIn = userFound.ToLoggedInUserDto();
+        LoggedInUserDto userLoggedIn = userFound.Data.ToLoggedInUserDto();
 
         var claims = new[] {
                     new Claim(JwtRegisteredClaimNames.Sub, configuration["Jwt:Subject"]!),
@@ -52,7 +54,7 @@ internal class UserService : IUserService
             expires: DateTime.UtcNow.AddMinutes(10),
             signingCredentials: signIn);
 
-        LoggedInUserDto userLoggedInWithToken = new LoggedInUserDto(
+        LoggedInUserDto userLoggedInWithToken = new(
             userLoggedIn.UserId,
             userLoggedIn.FullName,
             userLoggedIn.EmailId,
@@ -61,11 +63,11 @@ internal class UserService : IUserService
             new JwtSecurityTokenHandler().WriteToken(token)
             );
 
-        return userLoggedInWithToken;
+        return new OkResultData<LoggedInUserDto>(userLoggedInWithToken);
     }
 
-    public async Task<UserDto> SignInUser(SignInUserDto userData)
+    public async Task<ResultData<User>> SignInUser(SignInUserDto userData)
     {
-        return (await userRepository.SignInUser(userData.ToUser())).ToUserDto();
+        return (await userRepository.SignInUser(userData.ToUser()));
     }
 }

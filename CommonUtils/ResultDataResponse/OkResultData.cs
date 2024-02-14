@@ -2,8 +2,8 @@
 
 public class OkResultData<T> : ResultData<T>
 {
-    public OkResultData(T data, string message = "")
-        : base(message, data)
+    public OkResultData(T data)
+        : base(data: data)
     {
     }
 }
