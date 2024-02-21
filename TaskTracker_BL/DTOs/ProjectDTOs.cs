@@ -7,9 +7,9 @@ namespace TaskTracker_BL.DTOs;
 
 public class ProjectDto
 {
-    public ProjectDto(int id, string name, DateOnly? startDate, DateOnly? completionDate, ProjectStatusEnum status, int priority, IEnumerable<TaskUnit> tasks)
+    public ProjectDto(int projectId, string name, DateOnly? startDate, DateOnly? completionDate, ProjectStatusEnum status, int priority, IEnumerable<TaskUnit> tasks)
     {
-        this.Id = id;
+        this.ProjectID = projectId;
         this.Name = name;
         this.StartDate = startDate;
         this.CompletionDate = completionDate;
@@ -22,7 +22,7 @@ public class ProjectDto
         }
     }
 
-    public int Id { get; set; }
+    public int ProjectID { get; set; }
     public string Name { get; set; }
     public DateOnly? StartDate { get; set; }
     public DateOnly? CompletionDate { get; set; }
@@ -112,7 +112,7 @@ public class CreateProjectDto : IValidatableObject
             yield break;
         }
 
-        if (completionDateShort > today && Status != ProjectStatusEnum.Active)
+        if (startDateShort < today && completionDateShort > today && Status != ProjectStatusEnum.Active)
         {
             yield return new ValidationResult("Invalid Status. If project is active, please set Status to value 2 (Active)", [nameof(Status)]);
 

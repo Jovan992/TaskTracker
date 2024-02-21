@@ -23,7 +23,7 @@ namespace TaskTracker.Controllers
         {
             ResultData<ProjectDto>? result = await projectService.CreateProject(createProjectDto);
 
-            return result.ToCreatedAtActionResult(nameof(GetProjectById), new { id = result.Data!.Id });
+            return result.ToCreatedAtActionResult(nameof(GetProjectById), new { id = result.Data!.ProjectID });
         }
 
         // GET: api/Projects

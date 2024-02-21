@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using TaskTracker_DAL;
 using TaskTracker_BL;
 
@@ -16,8 +15,7 @@ namespace TaskTracker
 
             builder.Services.AddControllers().AddNewtonsoftJson();
 
-            var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
-            builder.Services.RegisterDataAccessLayer(connectionString!);
+            builder.RegisterDataAccessLayer();
             builder.Services.RegisterBusinessLogicLayer();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

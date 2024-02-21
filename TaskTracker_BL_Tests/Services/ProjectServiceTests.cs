@@ -51,7 +51,7 @@ public class ProjectServiceTests
 
         // Assert
         Assert.IsType<CreatedAtActionResultData<ProjectDto>>(result);
-        Assert.Equal(projectId, result.Data!.Id);
+        Assert.Equal(projectId, result.Data!.ProjectID);
     }
 
 
@@ -76,7 +76,7 @@ public class ProjectServiceTests
 
         // Assert
         Assert.IsType<OkResultData<ProjectDto>>(result);
-        Assert.Equal(projectId, result.Data!.Id);
+        Assert.Equal(projectId, result.Data!.ProjectID);
     }
 
     [Fact]
