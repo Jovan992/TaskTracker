@@ -9,8 +9,9 @@ using TaskTracker_DAL.Models;
 namespace TaskTracker.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+
     public class ProjectsController(IProjectService projectService) : ControllerBase
     {
         private readonly string idNotGreaterThanZero = "Id must be greater than 0.";
@@ -28,7 +29,6 @@ namespace TaskTracker.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        // PagedList<ProjectDto>
         public async Task<IActionResult> GetProjects([FromQuery] ProjectParameters projectParameters)
         {
             ResultData<PagedList<ProjectDto>> projects = await projectService.GetProjects(projectParameters);

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker_BL", "TaskTrack
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonUtils", "CommonUtils\CommonUtils.csproj", "{BF29F617-A0A7-401D-BB27-4A9F9E8FD8FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker_BL_Tests", "TaskTracker_BL_Tests\TaskTracker_BL_Tests.csproj", "{DC5A7791-ECCD-44BF-BC24-DED807CEA697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker_BL_Tests", "TaskTracker_BL_Tests\TaskTracker_BL_Tests.csproj", "{DC5A7791-ECCD-44BF-BC24-DED807CEA697}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,8 +9,9 @@ using TaskTracker_DAL.Models;
 namespace TaskTracker.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+
     public class TasksController(ITaskService taskService) : ControllerBase
     {
         private readonly ITaskService taskService = taskService;

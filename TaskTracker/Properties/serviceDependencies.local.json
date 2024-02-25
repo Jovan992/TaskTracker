@@ -6,6 +6,10 @@
       "type": "secrets.keyVault",
       "connectionId": "VaultUri",
       "dynamicId": null
+    },
+    "identityapp1": {
+      "connectionInfo": "App registration: TaskTrackerAPI, Tenant: Default Directory (ranisavljevjhotmail.onmicrosoft.com - Microsoft Entra ID)",
+      "type": "identityapp.default"
     }
   }
 }

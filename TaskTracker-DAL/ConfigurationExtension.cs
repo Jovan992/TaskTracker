@@ -18,7 +18,6 @@ namespace TaskTracker_DAL
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
             builder.Services.AddScoped<ITaskRepository, TaskRepository>();
             builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
