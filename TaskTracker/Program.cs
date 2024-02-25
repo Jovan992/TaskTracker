@@ -1,6 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using TaskTracker_DAL;
 using TaskTracker_BL;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TaskTracker
 {
@@ -11,23 +12,21 @@ namespace TaskTracker
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
 
             builder.Services.AddControllers().AddNewtonsoftJson();
 
-            var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
-            builder.Services.RegisterDataAccessLayer(connectionString!);
+            builder.RegisterDataAccessLayer();
             builder.Services.RegisterBusinessLogicLayer();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
-            // Configure swagger authorization
-            builder.Services.RegisterSwagger();
+            // Configure swagger doc info, bearer authorization and dateonly schema
+            builder.Services.RegisterSwaggerAuthAndSchemaFilter();
 
-            // Configure JWT authentication
-            builder.Services.RegisterAuthentication(builder);
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
             var app = builder.Build();
 

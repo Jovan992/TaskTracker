@@ -8,7 +8,7 @@ public class ProjectParameters : QueryStringParameters
     public string? SearchByName { get; set; } = string.Empty;
     public ProjectStatusEnum? SearchByStatus { get; set; } = null;
 
-    [Range(1, 10, ErrorMessage = "Ivalid Priority. Please provide value from 1 (Highest priority) to 10 (Lowest priority)")]
+    [Range(1, 10, ErrorMessage = "Invalid Priority. Please provide value from 1 (Highest priority) to 10 (Lowest priority)")]
     public int? SearchByPriority { get; set; } = null;
 
     [DataType(DataType.Date)]

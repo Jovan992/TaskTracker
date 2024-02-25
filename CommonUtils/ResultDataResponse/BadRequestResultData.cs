@@ -2,8 +2,8 @@
 
 public class BadRequestResultData<T> : ResultData<T>
 {
-    public BadRequestResultData(string message, T? data = default)
-        : base(message, data)
+    public BadRequestResultData(string message)
+        : base(message)
     {
     }
 }

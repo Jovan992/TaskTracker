@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TaskTracker_DAL.Context;
 using TaskTracker_DAL.Interfaces;
@@ -8,18 +10,17 @@ namespace TaskTracker_DAL
 {
     public static class ConfigurationExtension
     {
-        public static void RegisterDataAccessLayer(this IServiceCollection services, string connectionString)
+        public static void RegisterDataAccessLayer(this WebApplicationBuilder builder)
         {
-            services.AddDbContext<TaskTrackerContext>(options =>
-            {
-                options.UseSqlServer(connectionString);
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
+            builder.Services.AddDbContext<TaskTrackerContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnectionString"));
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        });
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<ITaskRepository, TaskRepository>();
-            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+            builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
         }
     }
 }

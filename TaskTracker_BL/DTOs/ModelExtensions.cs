@@ -83,29 +83,29 @@ public static class ModelExtensions
         };
     }
     
-    public static Project ToProject(this UpdateProjectDto createProjectDto)
+    public static Project ToProject(this UpdateProjectDto updateProjectDto)
     {
         DateOnly? startDate = null;
         DateOnly? completionDate = null;
 
-        if (createProjectDto.StartDate != null)
+        if (updateProjectDto.StartDate != null)
         {
-            startDate = DateOnly.FromDateTime((DateTime)createProjectDto.StartDate!);
+            startDate = DateOnly.FromDateTime((DateTime)updateProjectDto.StartDate!);
         }
 
-        if (createProjectDto.CompletionDate != null)
+        if (updateProjectDto.CompletionDate != null)
         {
-            completionDate = DateOnly.FromDateTime((DateTime)createProjectDto.CompletionDate!);
+            completionDate = DateOnly.FromDateTime((DateTime)updateProjectDto.CompletionDate!);
         }
 
         return new Project()
         {
-            ProjectId = createProjectDto.ProjectId,
-            Name = createProjectDto.Name,
+            ProjectId = updateProjectDto.ProjectId,
+            Name = updateProjectDto.Name,
             StartDate = startDate,
             CompletionDate = completionDate,
-            Status = createProjectDto.Status,
-            Priority = createProjectDto.Priority,
+            Status = updateProjectDto.Status,
+            Priority = updateProjectDto.Priority,
         };
     }
 
