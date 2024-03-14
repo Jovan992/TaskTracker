@@ -154,7 +154,7 @@
             "[resourceId('Microsoft.Web/sites', variables('websiteName'))]"
           ],
           "properties": {
-            "repoUrl": "https://github.com/github.com/Jovan992/TaskTracker",
+            "repoUrl": "https://github.com/Jovan992/TaskTracker",
             "branch": "main",
             "isManualIntegration": true
           }
