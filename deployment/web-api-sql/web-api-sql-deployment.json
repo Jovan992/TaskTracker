@@ -197,7 +197,7 @@
   "outputs": {
     "connectionString": {
       "type": "securestring",
-      "value": "[reference(resourceId(format('{0}/{1}','Microsoft.Web/sites/config',  variables('websiteName')), 'connectionstrings')).DefaultConnection]"
+      "value": "[concat('Data Source=tcp:', reference(variables('sqlserverName')).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('databaseName'), ';User ID=', parameters('sqlAdministratorLogin'), '@', reference(variables('sqlserverName')).fullyQualifiedDomainName, ';Password=', parameters('sqlAdministratorLoginPassword'))]"
     }
   }
 }
