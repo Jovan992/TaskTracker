@@ -197,7 +197,7 @@
   "outputs": {
     "connectionString": {
       "type": "securestring",
-      "value": "[reference(resourceId('Microsoft.Web/sites/config', format('{0}/{1}', variables('websiteName'), 'connectionstrings')).DefaultConnection)]"
+      "value": "[reference(resourceId('Microsoft.Web/sites/config', format('/{0}/{1}', variables('websiteName'), 'connectionstrings')).DefaultConnection)]"
     }
   }
 }
