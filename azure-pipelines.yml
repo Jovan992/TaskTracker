@@ -25,12 +25,12 @@ jobs:
         csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment-parameters.json'
         overrideParameters: '-sqlAdministratorLogin $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
         deploymentMode: 'Incremental'
-        deploymentName: 'sqldep'
+        deploymentName: 'sqldep1'
 
   - job: keyVault
     dependsOn: sql
     variables:
-      connectionStringOutput: $[ dependencies.sql.connectionString]
+      connectionStringOutput: $[dependencies.sql.connectionString]
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
@@ -45,4 +45,4 @@ jobs:
         csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deploment-parameters.json'
         overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue connectionStringOutput'
         deploymentMode: 'Incremental'
-        deploymentName: 'kvdep'
+        deploymentName: 'kvdep1'
