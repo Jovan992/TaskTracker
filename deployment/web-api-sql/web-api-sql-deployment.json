@@ -193,5 +193,11 @@
         "[resourceId('Microsoft.Web/sites', variables('websiteName'))]"
       ]
     }
-  ]
+  ],
+  "outputs": {
+    "connectionString": {
+      "type": "securestring",
+      "value": "[concat('Server=tcp:', reference(variables('sqlserverName')).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('databaseName'), ';Persist Security Info=False;User ID=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
+    }
+  }
 }
