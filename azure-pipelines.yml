@@ -8,18 +8,41 @@ trigger:
 
 pool: mycomputeragent
 
-steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'ARMPipeline-conn'
-    subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'armgr'
-    location: 'West Europe'
-    templateLocation: 'URL of the file'
-    csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
-    csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-parameters.json'
-    overrideParameters: '-sqlAdministratorLogin  $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
-    deploymentMode: 'Incremental'
-    deploymentName: 'armdep'
+jobs:
+  - job: sql
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      name: sqlJob
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'ARMPipeline-conn'
+        subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'armgr'
+        location: 'West Europe'
+        templateLocation: 'URL of the file'
+        csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
+        csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment-parameters.json'
+        overrideParameters: '-sqlAdministratorLogin  $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
+        deploymentMode: 'Incremental'
+        deploymentName: 'armdep'
+
+  - job: keyVault
+    dependsOn: sql
+    variables:
+      var: $[ dependencies.sql]
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'ARMPipeline-conn'
+        subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'armgr'
+        location: 'West Europe'
+        templateLocation: 'URL of the file'
+        csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deployment.json'
+        csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deploment-parameters.json'
+        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue var'
+        deploymentMode: 'Incremental'
+        deploymentName: 'armdep1'
