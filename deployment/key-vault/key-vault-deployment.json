@@ -59,6 +59,7 @@
       "keysPermissions": {
         "type": "array",
         "defaultValue": [
+          "get",
           "list"
         ],
         "metadata": {
@@ -68,6 +69,7 @@
       "secretsPermissions": {
         "type": "array",
         "defaultValue": [
+          "get",
           "list"
         ],
         "metadata": {
