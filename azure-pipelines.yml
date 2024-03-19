@@ -30,7 +30,7 @@ jobs:
   - job: keyVault
     dependsOn: sql
     variables:
-      var: $[ dependencies.sql.connectionString]
+      connectionStringOutput: $[ dependencies.sql.connectionString]
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
@@ -43,6 +43,6 @@ jobs:
         templateLocation: 'URL of the file'
         csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deployment.json'
         csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deploment-parameters.json'
-        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue var'
+        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue connectionStringOutput'
         deploymentMode: 'Incremental'
         deploymentName: 'kvdep'
