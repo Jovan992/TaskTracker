@@ -30,7 +30,7 @@ jobs:
   - job: keyVault
     dependsOn: sql
     variables:
-      var: $[ dependencies.sql]
+      var: $[ dependencies.sql.connectionString]
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
