@@ -6,13 +6,13 @@
         "value": "TaskTrackerKeyVault"
       },
       "objectId": {
-        "value": null
+        "value": ""
       },
       "secretName": {
-        "value": null
+        "value": ""
       },
       "secretValue": {
-        "value": null
+        "value": ""
       }      
     }
   }
