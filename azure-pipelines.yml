@@ -1,0 +1,23 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool: mycomputeragent
+
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'ARMPipeline-conn'
+    subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'armgr'
+    location: 'West Europe'
+    templateLocation: 'URL of the file'
+    csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
+    deploymentMode: 'Incremental'
+    deploymentName: 'armdep'
