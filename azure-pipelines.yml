@@ -19,6 +19,7 @@ steps:
     location: 'West Europe'
     templateLocation: 'URL of the file'
     csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
-    overrideParameters: '-sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -sqlAdministratorLogin  $(VAR_MYSQL_USER) -databaseName newdatabase'
+    csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-parameters.json'
+    overrideParameters: '-sqlAdministratorLogin  $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
     deploymentMode: 'Incremental'
     deploymentName: 'armdep'
