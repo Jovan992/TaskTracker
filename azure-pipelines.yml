@@ -32,7 +32,8 @@ jobs:
     dependsOn: sqlJob
     steps:
     - powershell: |
-        $sqlOutputObj = $[ dependencies.sqlJob.outputs['sqlStep.sql_arm'] ]
+        $sqlOutputObj = ${[ dependencies.sqlJob.outputs['sql_arm'] ]} | ConvertFrom-Json
+
         $sqlOutputObj.PSObject.Properties | ForEach-Object {
           $keyName = $_.Name
           $value = $_.Value.value
