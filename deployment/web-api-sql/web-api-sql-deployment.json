@@ -196,8 +196,8 @@
   ],
   "outputs": {
     "connectionString": {
-      "type": "string",
-      "value": "[concat('Data Source=tcp:', reference(variables('sqlserverName')).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('databaseName'), ';User ID=', parameters('sqlAdministratorLogin'), '@', reference(variables('sqlserverName')).fullyQualifiedDomainName, ';Password=', parameters('sqlAdministratorLoginPassword'), ';')]"
+      "value": "[concat('Data Source=tcp:', reference(variables('sqlserverName')).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('databaseName'), ';User ID=', parameters('sqlAdministratorLogin'), '@', reference(variables('sqlserverName')).fullyQualifiedDomainName, ';Password=', parameters('sqlAdministratorLoginPassword'), ';')]",
+      "type": "string"
     }
   }
 }
