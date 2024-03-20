@@ -11,6 +11,7 @@
     "parameters": {
       "keyVaultName": {
         "type": "string",
+        "defaultValue": "[concat('myKeyVault-', uniqueString(resourceGroup().id))]",
         "metadata": {
           "description": "Specifies the name of the key vault."
         }
@@ -104,7 +105,7 @@
       {
         "type": "Microsoft.KeyVault/vaults",
         "apiVersion": "2021-11-01-preview",
-        "name": "[concat('myKeyVault-', uniqueString(resourceGroup().id))]",
+        "name": "[parameters('keyVaultName')]",
         "location": "[parameters('location')]",
         "properties": {
           "enabledForDeployment": "[parameters('enabledForDeployment')]",
