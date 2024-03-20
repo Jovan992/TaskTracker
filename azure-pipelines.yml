@@ -34,15 +34,19 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          # sqlArm is already a pipeline variable returned via the ARM deployment
-          # task's deploymentOutputs attribute
-          $armOutputObj = $(sqlArm) | ConvertFrom-Json
-          $armOutputObj.PSObject.Properties | ForEach-Object {
-            $keyname = $_.Name
-            $value = $_.Value.value
-            
-            # Creates an output variable
-            Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+          $sqlArm = $env:sqlArm
+          if (-not $sqlArm) {
+            Write-Error "sqlArm variable not found or empty."
+            exit 1
+          }
+
+          $armOutputObj = $sqlArm -split '\r?\n' | ForEach-Object {
+            $keyValuePair = $_ -split ':' -replace '["{},]'
+            if ($keyValuePair -ne $null -and $keyValuePair.Count -eq 2) {
+              $key = $keyValuePair[0].Trim()
+              $value = $keyValuePair[1].Trim()
+              Write-Output "##vso[task.setvariable variable=$key;isOutput=true]$value"
+            }
           }
 
   - job: keyVault
