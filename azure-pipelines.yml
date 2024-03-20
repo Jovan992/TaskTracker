@@ -29,7 +29,8 @@ jobs:
         deploymentOutputs: sql_arm
           
     - powershell: |
-        $sqlOutputObj = $(sqlJob.outputs['sql_arm']) | ConvertFrom-Json
+        $sqlOutputObj = ConvertFrom-Json -InputObject $(sqlJob.outputs['sqlJob.outputVariable'])
+
         $sqlOutputObj.PSObject.Properties | ForEach-Object {
           $keyName = $_.Name
           $value = $_.Value.value
