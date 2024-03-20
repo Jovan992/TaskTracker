@@ -27,17 +27,15 @@ jobs:
         deploymentMode: 'Incremental'
         deploymentName: 'sqldep2'
         deploymentOutputs: sql_arm
-
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          $armOutputObj = $(sql_arm) | convertfrom-json
-          $sqlOutputObj.PSObject.Properties | ForEach-Object {
-            $keyName = $_.Name
-            $value = $_.Value.value
-            Write-Output "##vso[task.setvariable variable=$keyName;]$value"
-          }
+          
+    - powershell: |
+        $sqlOutputObj = $(sqlJob.outputs['sql_arm']) | ConvertFrom-Json
+        $sqlOutputObj.PSObject.Properties | ForEach-Object {
+          $keyName = $_.Name
+          $value = $_.Value.value
+          Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+        }
+      displayName: 'PowerShell Script'
 
   - job: keyVault
     dependsOn: sql
