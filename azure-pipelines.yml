@@ -43,6 +43,6 @@ jobs:
         templateLocation: 'URL of the file'
         csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deployment.json'
         csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deploment-parameters.json'
-        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue $(connectionStringOutput)'
+        overrideParameters: '-keyVaultName keyvault1 -objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue $(connectionStringOutput)'
         deploymentMode: 'Incremental'
         deploymentName: 'kvdep2'
