@@ -8,45 +8,47 @@ trigger:
 
 pool: mycomputeragent
 
-jobs:
-  - job: sqlJob
-    steps:
-    - task: AzureResourceManagerTemplateDeployment@3
-      name: sqlStep
-      inputs:
-        deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'ARMPipeline-conn'
-        subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
-        action: 'Create Or Update Resource Group'
-        resourceGroupName: 'armgr4'
-        location: 'West Europe'
-        templateLocation: 'URL of the file'
-        csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
-        csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment-parameters.json'
-        overrideParameters: '-sqlAdministratorLogin $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
-        deploymentMode: 'Incremental'
-        deploymentName: 'sqldep2'
-        deploymentOutputs: sql_arm
-      
-  - job: psJob
-    dependsOn: sqlJob
-    steps:
-    - powershell: |
-        $sqlOutputObj = ${[ dependencies.sqlJob.outputs['sqlStep.sql_arm'] ]} | ConvertFrom-Json
+stages:
+- stage: Deploy
+  jobs:
+    - job: sqlJob
+      steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        name: sqlStep
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'ARMPipeline-conn'
+          subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: 'armgr4'
+          location: 'West Europe'
+          templateLocation: 'URL of the file'
+          csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
+          csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment-parameters.json'
+          overrideParameters: '-sqlAdministratorLogin $(VAR_MYSQL_USER) -sqlAdministratorLoginPassword $(VAR_MYSQL_PASS) -databaseName newdatabase'
+          deploymentMode: 'Incremental'
+          deploymentName: 'sqldep2'
+          deploymentOutputs: sqlArm
 
-        $sqlOutputObj.PSObject.Properties | ForEach-Object {
-          $keyName = $_.Name
-          $value = $_.Value.value
-          Write-Output "##vso[task.setvariable variable=$keyName;]$value"
-        }
-      name: 'psStep'
-      displayName: 'PowerShell Script'
+      - powershell: |
+          $connectionString = $(sqlStep.outputs['sqlArm.connectionString'])
+          Write-Output "##vso[task.setvariable variable=connectionString;isOutput=true]$connectionString"
+        displayName: 'Set Connection String Output Variable'
+
+- stage: UseSQL
+  dependsOn: Deploy 
+
+  jobs:
+  - job: PlaceholderJob
+    displayName: 'Placeholder Job'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: echo "This is a placeholder job"
+      displayName: 'Placeholder Step'
 
   - job: keyVault
-    dependsOn: 
-    - sqlJob 
-    - psJob
-
+    
     variables:
       connectionStringOutput: $[ dependencies.psJob.outputs['psStep.connectionString'] ]
       connectionStringOutput1: "asdasdasdasdasd"
@@ -62,6 +64,6 @@ jobs:
         templateLocation: 'URL of the file'
         csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deployment.json'
         csmParametersFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/key-vault/key-vault-deploment-parameters.json'
-        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue $(connectionStringOutput)'
+        overrideParameters: '-objectId  $(aad_objectid) -secretName SQLConnectionString -secretValue $(sqlJob.connectionStringOutput)'
         deploymentMode: 'Incremental'
         deploymentName: 'kvdep2'
