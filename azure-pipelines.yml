@@ -32,7 +32,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          $armOutputObj = $env:sql_arm | convertfrom-json
+          $armOutputObj = $(sql_arm) | convertfrom-json
           $sqlOutputObj.PSObject.Properties | ForEach-Object {
             $keyName = $_.Name
             $value = $_.Value.value
