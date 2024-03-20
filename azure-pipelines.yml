@@ -29,23 +29,27 @@ jobs:
         deploymentName: 'sqldep2'
         deploymentOutputs: sqlArm
 
-    - pwsh: |
-        ## sqlArm is already a pipeline variable returned via the ARM deployment
-        ## task's deploymentOutputs attribute
-        $armOutputObj = $env:sqlArm | convertfrom-json
-        $armOutputObj.PSObject.Properties | ForEach-Object {
-          $keyname = $_.Name
-          $value = $_.Value.value
-          
-          ## Creates an output variable
-          Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
-        }
+    - task: PowerShell@2
+      name: psStep
+      inputs:
+        targetType: 'inline'
+        script: |
+          # sqlArm is already a pipeline variable returned via the ARM deployment
+          # task's deploymentOutputs attribute
+          $armOutputObj = $(sqlArm) | ConvertFrom-Json
+          $armOutputObj.PSObject.Properties | ForEach-Object {
+            $keyname = $_.Name
+            $value = $_.Value.value
+            
+            # Creates an output variable
+            Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+          }
 
   - job: keyVault
     dependsOn: sqlJob
 
     variables:
-      connectionStringOutput: $[ dependencies.sqlJob.outputs['sqlStep.connectionString'] ]
+      connectionStringOutput: $[ dependencies.sqlJob.outputs['psStep.connectionString'] ]
       connectionStringOutput1: "asdasdasdasdasd"
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
