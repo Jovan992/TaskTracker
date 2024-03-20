@@ -18,7 +18,7 @@ jobs:
         azureResourceManagerConnection: 'ARMPipeline-conn'
         subscriptionId: '8b5c630a-aae6-468d-98df-47551225b49a'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: 'armgr2'
+        resourceGroupName: 'armgr3'
         location: 'West Europe'
         templateLocation: 'URL of the file'
         csmFileLink: 'https://raw.githubusercontent.com/Jovan992/TaskTracker/master/deployment/web-api-sql/web-api-sql-deployment.json'
